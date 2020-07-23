@@ -1,0 +1,33 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="spacing">4dp</dimen>
+    <dimen name="size_5">5dp</dimen>
+    <dimen name="font_15">15sp</dimen>
+    <dimen name="size_100">100dp</dimen>
+    <dimen name="size_150">150dp</dimen>
+    <dimen name="size_180">180dp</dimen>
+    <dimen name="size_15">15dp</dimen>
+    <dimen name="size_12">12dp</dimen>
+    <dimen name="size_80">80dp</dimen>
+    <dimen name="size_50">50dp</dimen>
+    <dimen name="size_30">30dp</dimen>
+    <dimen name="size_70">70dp</dimen>
+    <dimen name="size_20">20dp</dimen>
+    <dimen name="size_25">25dp</dimen>
+    <dimen name="size_40">40dp</dimen>
+    <dimen name="size_2">2dp</dimen>
+    <dimen name="size_120">120dp</dimen>
+    <dimen name="size_1">1dp</dimen>
+    <dimen name="size_10">10dp</dimen>
+    <dimen name="chat_activity_message_list_last_message_emoji_size">@dimen/_15sdp</dimen>
+
+
+    <!--padding-->
+    <dimen name="chat_padding_normal">16dp</dimen>
+    <dimen name="chat_padding_small">8dp</dimen>
+    <dimen name="chat_padding_x_small">4dp</dimen>
+    <dimen name="chat_padding_xx_small">2dp</dimen>
+    <dimen name="chat_padding_big">22dp</dimen>
+
+</resources>
+

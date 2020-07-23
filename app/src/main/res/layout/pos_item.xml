@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_90sdp"
+    android:layout_marginTop="@dimen/_4sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView android:id="@+id/pos_img"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"/>
+
+            <TextView android:id="@+id/edt_pos_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/pos_img"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:text="123IHSH"
+                android:textSize="@dimen/_14ssp"
+                android:textAllCaps="true"
+                android:textColor="@color/gray_dark" />
+
+            <TextView android:id="@+id/edt_pos_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pos_img"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_above="@id/edt_pos_code"
+                android:text="Kijiweni"
+                android:textSize="@dimen/_16ssp"
+                android:textColor="@color/black" />
+
+
+            <TextView android:id="@+id/edt_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_16ssp"
+                android:text="Status: Pending"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/gray_dark" />
+
+        </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

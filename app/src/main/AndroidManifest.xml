@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mrc.reports">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- user Permission for getting the location of the user -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBbVovy0-pjFMHbCD908gfD7gtHfyfLchU" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_icon"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.AboutUs"
+            android:label="@string/title_activity_about_us"
+            android:parentActivityName=".ui.Settings_ui"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mrc.reports.ui.Settings_ui" />
+        </activity>
+        <activity
+            android:name=".ui.Update_ui"
+            android:label="@string/title_activity_update_ui"
+            android:parentActivityName=".ui.Reports_ui"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mrc.reports.ui.Reports_ui" />
+        </activity>
+        <activity
+            android:name=".ui.Camera_ui"
+            android:label="@string/title_activity_camera_ui"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.Settings_ui"
+            android:label="@string/title_activity_settings_ui"
+            android:parentActivityName=".ui.Home_ui"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mrc.reports.ui.Home_ui" />
+        </activity>
+        <activity
+            android:name=".ui.AddRecords_ui"
+            android:label="@string/title_activity_add_records_ui"
+            android:parentActivityName=".ui.Reports_ui"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mrc.reports.ui.Reports_ui" />
+        </activity>
+        <activity
+            android:name=".ui.Reports_ui"
+            android:label="@string/title_activity_reports_ui"
+            android:parentActivityName=".ui.Home_ui"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mrc.reports.ui.Home_ui" />
+        </activity>
+        <activity
+            android:name=".ui.Home_ui"
+            android:label="@string/title_activity_home_ui"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.SignIn_ui"
+            android:label="@string/title_activity_sign_in_ui"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.Splash_ui"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+    </application>
+
+</manifest>
