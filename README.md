@@ -17,5 +17,5 @@ This project is mantained by:
 
 <a href="https://github.com/fredsabuni"> Fredy Sabuni<a/>
 
-#NOTE:
+<b>#NOTE:</b> <br/>
 To have a full accesss of API which are required for this application please contact: <b>fredmalack15@gmail.com</b>
