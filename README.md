@@ -1,4 +1,4 @@
-# mrc-datacollection
+# mrc-DataCollection
 Data collection tool which works online as well as offline used for taking records of branding done to Mobile Money Agents by Marketing Agents on behalf of Telecommunication companies.
 # Installation
 git clone https://github.com/fredsabuni/mrc-datacollection.git
