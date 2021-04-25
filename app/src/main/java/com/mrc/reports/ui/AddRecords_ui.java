@@ -143,7 +143,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
         mPhoneNumber = findViewById(R.id.edt_phone);
         mPosCode = findViewById(R.id.edt_pos_code);
 
-
         //get Data from Server
         getServerData();
 
@@ -192,7 +191,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                 ZoneData = clickedItem.getId();
                 //get CityData
                 getReligionData(clickedItem.getId());
-
             }
 
             @Override
