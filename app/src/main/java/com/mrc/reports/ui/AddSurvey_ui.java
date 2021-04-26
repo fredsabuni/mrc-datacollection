@@ -1,6 +1,7 @@
 package com.mrc.reports.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +27,7 @@ import android.widget.Spinner;
 import com.google.android.material.textfield.TextInputEditText;
 import com.mrc.reports.BaseActivity;
 import com.mrc.reports.R;
+import com.mrc.reports.adapter.CategoryAdapter;
 import com.mrc.reports.adapter.CompetitorAdapter;
 import com.mrc.reports.adapter.CompetitorMaterialAdapter;
 import com.mrc.reports.adapter.MaterialAdapter;
@@ -32,12 +35,22 @@ import com.mrc.reports.adapter.RegionAdapter;
 import com.mrc.reports.adapter.ServicesAdapter;
 import com.mrc.reports.adapter.ShopAdapter;
 import com.mrc.reports.adapter.ZoneAdapter;
+import com.mrc.reports.database.Category_db;
 import com.mrc.reports.database.Competitor_db;
+import com.mrc.reports.database.MaterialTypeList;
 import com.mrc.reports.database.Materials_db;
+import com.mrc.reports.database.Mrc_db;
 import com.mrc.reports.database.Region_db;
 import com.mrc.reports.database.Service_db;
 import com.mrc.reports.database.ShopType_db;
+import com.mrc.reports.database.SurveyCategoryList;
+import com.mrc.reports.database.SurveyComMaterialList;
+import com.mrc.reports.database.SurveyCompetitorList;
+import com.mrc.reports.database.SurveyMaterialList;
+import com.mrc.reports.database.SurveyServiceList;
+import com.mrc.reports.database.Survey_db;
 import com.mrc.reports.database.Zone_db;
+import com.mrc.reports.model.CategoryItem;
 import com.mrc.reports.model.CompetitorItem;
 import com.mrc.reports.model.MaterialItem;
 import com.mrc.reports.model.RegionItem;
@@ -53,15 +66,17 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.CompetitorClickListener, CompetitorMaterialAdapter.ComMaterialClickListener, ServicesAdapter.ItemServiceClickListener,  MaterialAdapter.MaterialClickListener {
+public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.CategoryClickListener, CompetitorAdapter.CompetitorClickListener, CompetitorMaterialAdapter.ComMaterialClickListener, ServicesAdapter.ItemServiceClickListener,  MaterialAdapter.MaterialClickListener {
 
     TextInputEditText mDistrict;
     TextInputEditText mSuburb;
@@ -81,6 +96,7 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
     RecyclerView mServiceList;
     RecyclerView mCompetitorList;
     RecyclerView mCompetitorMaterialList;
+    RecyclerView mCategoryList;
     FloatingActionButton mBtn;
 
     ArrayList<MaterialItem> materialItems_installed = new ArrayList<>();
@@ -90,6 +106,7 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
     ArrayList<ShopItem> shopItems = new ArrayList<>();
     ArrayList<ServiceItem> serviceItems = new ArrayList<>();
     ArrayList<CompetitorItem> competitorItems = new ArrayList<>();
+    ArrayList<CategoryItem> categoryItems = new ArrayList<>();
 
     ZoneAdapter zoneAdapter;
     RegionAdapter regionAdapter;
@@ -98,6 +115,7 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
     CompetitorMaterialAdapter competitorMaterialAdapter;
     CompetitorAdapter competitorAdapter;
     ServicesAdapter servicesAdapter;
+    CategoryAdapter categoryAdapter;
 
     public final int REQ_CODE_IMG = 101;
     private RealmResults<Zone_db> zoneDbRealmResults;
@@ -106,9 +124,19 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
     private RealmResults<Materials_db> materialsDbRealmResults;
     private RealmResults<Competitor_db> competitorDbRealmResults;
     private RealmResults<Service_db> serviceDbRealmResults;
+    private RealmResults<Category_db> categoryDbRealmResults;
+
+    RealmList<SurveyCategoryList> surveyCategoryLists = new RealmList<>();
+    RealmList<SurveyComMaterialList> surveyComMaterialLists = new RealmList<>();
+    RealmList<SurveyCompetitorList> surveyCompetitorLists = new RealmList<>();
+    RealmList<SurveyMaterialList> surveyMaterialLists = new RealmList<>();
+    RealmList<SurveyServiceList> surveyServiceLists = new RealmList<>();
+
+    public final int STATUS_NEEDS_SYNC = 1;
+
     Realm realm;
 
-    String ID,ZoneData, RegionData, DistrictData, SuburbData, StreetData, PosNameData, ContactData, PhoneData, PosCodeData, ShopData, ImgData, LatData, LonData;
+    String ID,ZoneData, RegionData, DistrictData, SuburbData, StreetData, PosNameData, ContactData, PhoneData, PosCodeData, ShopData, ImgData, LatData, LonData, brandingData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +166,7 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
         mContactPerson = findViewById(R.id.edt_contact_person);
         mPhoneNumber = findViewById(R.id.edt_phone);
         mPosCode = findViewById(R.id.edt_pos_code);
+        mCategoryList = findViewById(R.id.categories_list);
 
         //get Data from Server
         getServerData();
@@ -301,6 +330,27 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
         mServiceList.setAdapter(servicesAdapter);
         servicesAdapter.setItemClickListener(this);
 
+        if(categoryItems.size() == 0){
+            try{
+                //Query the Database
+                categoryDbRealmResults = realm.where(Category_db.class).findAll();
+                if(categoryDbRealmResults != null && categoryDbRealmResults.size() > 0){
+                    for(Category_db category_db: categoryDbRealmResults){
+                        categoryItems.add(new CategoryItem(category_db));
+                    }
+                    categoryAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Setting Category Material Adapter
+        LinearLayoutManager linearCategoryManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        mCategoryList.setLayoutManager(linearServiceManager);
+        categoryAdapter = new CategoryAdapter(this, categoryItems);
+        mCategoryList.setAdapter(categoryAdapter);
+        categoryAdapter.setItemClickListener(this);
 
 
         mImg.setOnClickListener(new View.OnClickListener() {
@@ -553,6 +603,113 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
             Snackbar.make(mAddRecordBtn,getString(R.string.picture_error), Snackbar.LENGTH_SHORT).show();
             return;
         }
+
+        if(serviceItems.size() > 0){
+            for (int i = 0; i< serviceItems.size(); i++){
+                SurveyServiceList surveyServiceList = new SurveyServiceList();
+                surveyServiceList.setId(serviceItems.get(i).getId());
+                surveyServiceList.setName(serviceItems.get(i).getName());
+                surveyServiceLists.add(surveyServiceList);
+            }
+        }
+
+        if(categoryItems.size() > 0){
+            for (int i = 0; i< categoryItems.size(); i++){
+                SurveyCategoryList surveyCategoryList = new SurveyCategoryList();
+                surveyCategoryList.setId(categoryItems.get(i).getId());
+                surveyCategoryList.setName(categoryItems.get(i).getName());
+                surveyCategoryLists.add(surveyCategoryList);
+            }
+        }
+
+        if(materialItems_installed.size() > 0){
+            for (int i = 0; i< materialItems_installed.size(); i++){
+                SurveyMaterialList surveyMaterialList = new SurveyMaterialList();
+                surveyMaterialList.setId(materialItems_installed.get(i).getId());
+                surveyMaterialList.setType(materialItems_installed.get(i).getName());
+                surveyMaterialLists.add(surveyMaterialList);
+            }
+        }
+
+        if(competitorItems.size() > 0){
+            for (int i = 0; i< competitorItems.size(); i++){
+                SurveyCompetitorList surveyCompetitorList = new SurveyCompetitorList();
+                surveyCompetitorList.setId(competitorItems.get(i).getId());
+                surveyCompetitorList.setName(competitorItems.get(i).getName());
+                surveyCompetitorLists.add(surveyCompetitorList);
+            }
+        }
+
+        if(materialItems_competitor.size() > 0){
+            for (int i = 0; i< materialItems_competitor.size(); i++){
+                SurveyComMaterialList surveyComMaterialList = new SurveyComMaterialList();
+                surveyComMaterialList.setId(competitorItems.get(i).getId());
+                surveyComMaterialList.setType(competitorItems.get(i).getName());
+                surveyComMaterialLists.add(surveyComMaterialList);
+            }
+        }
+
+        //Save Data into Database
+        realm.beginTransaction();
+        progressDialog.show();
+        Survey_db survey_db = new Survey_db();
+        ID = UUID.randomUUID().toString();
+
+        survey_db.setSurvey_id(ID);
+        survey_db.setSurvey_zone_id(ZoneData);
+        survey_db.setSurvey_region_id(RegionData);
+        survey_db.setSurvey_district_id(DistrictData);
+        survey_db.setSurvey_suburb(SuburbData);
+        survey_db.setSurvey_street(StreetData);
+        survey_db.setSurvey_pos_name(PosNameData);
+        survey_db.setSurvey_contact_person(ContactData);
+        survey_db.setSurvey_phone_number(PhoneData);
+        survey_db.setSurvey_pos_code(PosCodeData);
+        survey_db.setSurvey_shop_type_id(ShopData);
+        survey_db.setSurveyCategoryLists(surveyCategoryLists);
+        survey_db.setSurveyComMaterialLists(surveyComMaterialLists);
+        survey_db.setSurveyCompetitorLists(surveyCompetitorLists);
+        survey_db.setSurveyServiceLists(surveyServiceLists);
+        survey_db.setSurveyMaterialLists(surveyMaterialLists);
+        survey_db.setSurvey_lat(String.valueOf(MLATITUDE));
+        survey_db.setSurvey_lon(String.valueOf(MLONGITUDE));
+        survey_db.setSurvey_branding(brandingData);
+        survey_db.setStatus(STATUS_NEEDS_SYNC);
+        //Insert Data into Database
+        realm.insertOrUpdate(survey_db);
+        realm.commitTransaction();
+
+        //Check if Data Is Insert
+        Survey_db surveyDb = realm.where(Survey_db.class).equalTo("survey_id",ID).findFirst();
+
+        if(surveyDb != null){
+            progressDialog.dismiss();
+            //Clear Data
+            mDistrict.setText("");
+            mSuburb.setText("");
+            mStreet.setText("");
+            mPosName.setText("");
+            mContactPerson.setText("");
+            mPhoneNumber.setText("");
+            mPosCode.setText("");
+
+            AlertDialog alertDialog = new AlertDialog.Builder(AddSurvey_ui.this).create();
+            alertDialog.setTitle("Success");
+            alertDialog.setMessage("Data saved successfully");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }else {
+            progressDialog.dismiss();
+            Log.d(TAG, "Data not saved");
+        }
+
+
+
     }
 
     //Query Region based on Zone
@@ -686,5 +843,30 @@ public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.Comp
 
     private int getService(ServiceItem position) {
         return serviceItems.indexOf(position);
+    }
+
+    @Override
+    public void onCategoryItemClick(View view, ArrayList<CategoryItem> Items) {
+        categoryItems.addAll(Items);
+        Log.d("Added", categoryItems.get(0).getName());
+    }
+
+    @Override
+    public void onCategoryRemoveItemClick(View view, CategoryItem position) {
+        try {
+            if(categoryItems.size() != 0){
+                int indexID = getCategory(position);
+                categoryItems.remove(indexID);
+                for (int i = 0; i<categoryItems.size(); i++){
+                    Log.d("Category",categoryItems.get(i).getName());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public int getCategory(CategoryItem position){
+        return  categoryItems.indexOf(position);
     }
 }

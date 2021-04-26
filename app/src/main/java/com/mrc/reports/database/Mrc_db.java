@@ -174,7 +174,6 @@ public class Mrc_db extends RealmObject {
     }
 
 
-
     public Mrc_db(MrcItem mrcItem){
         mrc_id = mrcItem.getId();
         mrc_zone_id = mrcItem.getZone_id();

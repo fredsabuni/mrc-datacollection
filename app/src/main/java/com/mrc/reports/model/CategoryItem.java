@@ -1,5 +1,8 @@
 package com.mrc.reports.model;
 
+import com.mrc.reports.database.Category_db;
+import com.mrc.reports.database.Competitor_db;
+
 public class CategoryItem {
     String id;
     String name;
@@ -23,5 +26,10 @@ public class CategoryItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public CategoryItem(Category_db category_db){
+        this.id = category_db.get_id();
+        this.name = category_db.get_name();
     }
 }
