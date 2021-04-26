@@ -154,7 +154,6 @@ public class Settings_ui extends BaseActivity {
                     detailsObj.put("contact_person", mrcItems.get(i).getContact_person());
                     detailsObj.put("phone_number", mrcItems.get(i).getPhone_number());
 
-
                     for(int j = 0; j<mrcItems.get(i).getMaterialTypeLists().size(); j++){
                         JSONObject materialsObj = new JSONObject();
                         materialsObj.put("material_type", mrcItems.get(i).getMaterialTypeLists().get(j).getType());

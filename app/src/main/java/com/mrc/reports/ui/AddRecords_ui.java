@@ -162,7 +162,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
 
         //Setting Material Removed Adapter
@@ -383,7 +382,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                 materialTypeList.setQuantity(mMaterials.get(i).getQuantity());
                 materialTypeList.setStatus(mMaterials.get(i).getStatus());
                 materialTypeLists.add(materialTypeList);
-
             }
         }
 
@@ -419,7 +417,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
 
         if(mrc_db != null){
             progressDialog.dismiss();
-
             //Clear Data
             mDistrict.setText("");
             mSuburb.setText("");

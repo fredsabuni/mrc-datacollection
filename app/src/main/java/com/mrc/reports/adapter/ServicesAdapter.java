@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ViewHolder> {
-    private ItemClickListener onItemClickListener;
+    private ItemServiceClickListener serviceClickListener;
     private LayoutInflater layoutInflater;
     public static ArrayList<ServiceItem> mList;
     private Context mContext;
@@ -27,13 +27,13 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ViewHo
     String ID;
     ArrayList<ServiceItem> serviceItems = new ArrayList<>();
 
-    public void setItemClickListener(ItemClickListener clickListener) {
-        onItemClickListener = clickListener;
+    public void setItemClickListener(ItemServiceClickListener clickListener) {
+        serviceClickListener = clickListener;
     }
 
-    public interface ItemClickListener {
-        void onItemClick(View view, ArrayList<ServiceItem> serviceItems);
-        void onRemoveItemClick(View view, ServiceItem position);
+    public interface ItemServiceClickListener {
+        void onServiceItemClick(View view, ArrayList<ServiceItem> serviceItems);
+        void onServiceRemoveItemClick(View view, ServiceItem position);
     }
 
     public ServicesAdapter(Context context, ArrayList<ServiceItem> list){
@@ -67,7 +67,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ViewHo
                     serviceItems.add(new ServiceItem(ID,mList.get(position).getName()));
                 }else {
                     ServiceItem serviceItem = new ServiceItem(ID, mList.get(position).getName());
-                    onItemClickListener.onRemoveItemClick(compoundButton,serviceItem);
+                    serviceClickListener.onServiceRemoveItemClick(compoundButton,serviceItem);
                 }
             }
         });

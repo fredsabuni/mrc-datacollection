@@ -1,5 +1,8 @@
 package com.mrc.reports.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -7,12 +10,105 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.mrc.reports.BaseActivity;
 import com.mrc.reports.R;
+import com.mrc.reports.adapter.CompetitorAdapter;
+import com.mrc.reports.adapter.CompetitorMaterialAdapter;
+import com.mrc.reports.adapter.MaterialAdapter;
+import com.mrc.reports.adapter.RegionAdapter;
+import com.mrc.reports.adapter.ServicesAdapter;
+import com.mrc.reports.adapter.ShopAdapter;
+import com.mrc.reports.adapter.ZoneAdapter;
+import com.mrc.reports.database.Competitor_db;
+import com.mrc.reports.database.Materials_db;
+import com.mrc.reports.database.Region_db;
+import com.mrc.reports.database.Service_db;
+import com.mrc.reports.database.ShopType_db;
+import com.mrc.reports.database.Zone_db;
+import com.mrc.reports.model.CompetitorItem;
+import com.mrc.reports.model.MaterialItem;
+import com.mrc.reports.model.RegionItem;
+import com.mrc.reports.model.ServiceItem;
+import com.mrc.reports.model.ShopItem;
+import com.mrc.reports.model.ZoneItem;
+import com.mrc.reports.utils.Utils;
 
-public class AddSurvey_ui extends AppCompatActivity {
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class AddSurvey_ui extends BaseActivity implements CompetitorAdapter.CompetitorClickListener, CompetitorMaterialAdapter.ComMaterialClickListener, ServicesAdapter.ItemServiceClickListener,  MaterialAdapter.MaterialClickListener {
+
+    TextInputEditText mDistrict;
+    TextInputEditText mSuburb;
+    TextInputEditText mStreet;
+    TextInputEditText mPosName;
+    TextInputEditText mContactPerson;
+    TextInputEditText mPhoneNumber;
+    TextInputEditText mPosCode;
+    Button mAddRecordBtn;
+    ImageView mImg;
+    Spinner mZoneSpinner;
+    Spinner mRegionSpinner;
+    Spinner mShopSpinner;
+    RadioButton mYesBtn;
+    RadioButton mNoBtn;
+    RecyclerView mInstalledList;
+    RecyclerView mServiceList;
+    RecyclerView mCompetitorList;
+    RecyclerView mCompetitorMaterialList;
+    FloatingActionButton mBtn;
+
+    ArrayList<MaterialItem> materialItems_installed = new ArrayList<>();
+    ArrayList<MaterialItem> materialItems_competitor = new ArrayList<>();
+    ArrayList<ZoneItem> zoneItems = new ArrayList<>();
+    ArrayList<RegionItem> regionItems = new ArrayList<>();
+    ArrayList<ShopItem> shopItems = new ArrayList<>();
+    ArrayList<ServiceItem> serviceItems = new ArrayList<>();
+    ArrayList<CompetitorItem> competitorItems = new ArrayList<>();
+
+    ZoneAdapter zoneAdapter;
+    RegionAdapter regionAdapter;
+    ShopAdapter shopAdapter;
+    MaterialAdapter materialAdapter;
+    CompetitorMaterialAdapter competitorMaterialAdapter;
+    CompetitorAdapter competitorAdapter;
+    ServicesAdapter servicesAdapter;
+
+    public final int REQ_CODE_IMG = 101;
+    private RealmResults<Zone_db> zoneDbRealmResults;
+    private RealmResults<Region_db> regionDbRealmResults;
+    private RealmResults<ShopType_db> shopTypeDbRealmResults;
+    private RealmResults<Materials_db> materialsDbRealmResults;
+    private RealmResults<Competitor_db> competitorDbRealmResults;
+    private RealmResults<Service_db> serviceDbRealmResults;
+    Realm realm;
+
+    String ID,ZoneData, RegionData, DistrictData, SuburbData, StreetData, PosNameData, ContactData, PhoneData, PosCodeData, ShopData, ImgData, LatData, LonData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +116,575 @@ public class AddSurvey_ui extends AppCompatActivity {
         setContentView(R.layout.add_survey_ui);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
+
+        mInstalledList= findViewById(R.id.material_installed_list);
+        mServiceList = findViewById(R.id.service_list);
+        mCompetitorList = findViewById(R.id.material_list);
+        mCompetitorMaterialList = findViewById(R.id.competitor_material_list);
+        mNoBtn = findViewById(R.id.radio_no);
+        mYesBtn = findViewById(R.id.radio_yes);
+        mImg = findViewById(R.id.pos_img);
+        mZoneSpinner = findViewById(R.id.zone_spinner);
+        mRegionSpinner = findViewById(R.id.region_spinner);
+        mShopSpinner = findViewById(R.id.shop_type_spinner);
+        mAddRecordBtn = findViewById(R.id.add_record_btn);
+        mDistrict = findViewById(R.id.edt_district);
+        mSuburb = findViewById(R.id.edt_suburb);
+        mStreet = findViewById(R.id.edt_street);
+        mPosName = findViewById(R.id.edt_pos_name);
+        mContactPerson = findViewById(R.id.edt_contact_person);
+        mPhoneNumber = findViewById(R.id.edt_phone);
+        mPosCode = findViewById(R.id.edt_pos_code);
+
+        //get Data from Server
+        getServerData();
+
+        if(materialItems_installed.size() == 0){
+            try{
+                //Query the Database
+                materialsDbRealmResults = realm.where(Materials_db.class).findAll();
+                if(materialsDbRealmResults != null && materialsDbRealmResults.size() > 0){
+                    for(Materials_db materials_db: materialsDbRealmResults){
+                        materialItems_competitor.add(new MaterialItem(materials_db));
+                        materialItems_installed.add(new MaterialItem(materials_db));
+                    }
+                    materialAdapter.notifyDataSetChanged();
+                    competitorAdapter.notifyDataSetChanged();
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Setting Material Adapter
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mInstalledList.setLayoutManager(linearLayoutManager);
+        materialAdapter = new MaterialAdapter(this, materialItems_installed);
+        mInstalledList.setAdapter(materialAdapter);
+        materialAdapter.setMaterialClickListener(this);
+
+
+        //Setting Competitor Material Adapter
+        LinearLayoutManager linearManager = new LinearLayoutManager(this);
+        mCompetitorMaterialList.setLayoutManager(linearManager);
+        competitorMaterialAdapter = new CompetitorMaterialAdapter(this, materialItems_competitor);
+        mCompetitorMaterialList.setAdapter(competitorMaterialAdapter);
+        competitorMaterialAdapter.setMaterialClickListener(this);
+
+        if(competitorItems.size() == 0){
+            try{
+                //Query the Database
+                competitorDbRealmResults = realm.where(Competitor_db.class).findAll();
+                if(competitorDbRealmResults != null && competitorDbRealmResults.size() > 0){
+                    for(Competitor_db competitor_db: competitorDbRealmResults){
+                        competitorItems.add(new CompetitorItem(competitor_db));
+                    }
+                    competitorAdapter.notifyDataSetChanged();
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Setting Competitor Material Adapter
+        LinearLayoutManager linearCompetitorManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        mCompetitorList.setLayoutManager(linearCompetitorManager);
+        competitorAdapter = new CompetitorAdapter(this, competitorItems);
+        mCompetitorList.setAdapter(competitorAdapter);
+        competitorAdapter.setItemClickListener(this);
+
+        if(zoneItems.size() == 0){
+            try{
+                //Query the Database
+                zoneDbRealmResults = realm.where(Zone_db.class).findAll();
+                if(zoneDbRealmResults != null && zoneDbRealmResults.size() > 0){
+                    for(Zone_db zone_db: zoneDbRealmResults){
+                        zoneItems.add(new ZoneItem(zone_db));
+                    }
+                    zoneAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Zone Spinner
+        zoneAdapter = new ZoneAdapter(this,zoneItems);
+        mZoneSpinner.setAdapter(zoneAdapter);
+        mZoneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ZoneItem clickedItem = (ZoneItem) parent.getItemAtPosition(position);
+                ZoneData = clickedItem.getId();
+                //get CityData
+                getReligionData(clickedItem.getId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        //Region Spinner
+        regionAdapter = new RegionAdapter(this,regionItems);
+        mRegionSpinner.setAdapter(regionAdapter);
+        mRegionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                RegionItem clickedItem = (RegionItem) parent.getItemAtPosition(position);
+                RegionData = clickedItem.getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if(shopItems.size() == 0){
+            try{
+                //Query the Database
+                shopTypeDbRealmResults = realm.where(ShopType_db.class).findAll();
+                if(shopTypeDbRealmResults != null && shopTypeDbRealmResults.size() > 0){
+                    for(ShopType_db shopType_db: shopTypeDbRealmResults){
+                        shopItems.add(new ShopItem(shopType_db));
+                    }
+                    shopAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Shop Type Spinner
+        shopAdapter = new ShopAdapter(this,shopItems);
+        mShopSpinner.setAdapter(shopAdapter);
+        mShopSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ShopItem clickedItem = (ShopItem) parent.getItemAtPosition(position);
+                ShopData = clickedItem.getShop_type();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if(serviceItems.size() == 0){
+            try{
+                //Query the Database
+                serviceDbRealmResults = realm.where(Service_db.class).findAll();
+                if(serviceDbRealmResults != null && serviceDbRealmResults.size() > 0){
+                    for(Service_db service_db: serviceDbRealmResults){
+                        serviceItems.add(new ServiceItem(service_db));
+                    }
+                    servicesAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        //Setting Service Material Adapter
+        LinearLayoutManager linearServiceManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        mServiceList.setLayoutManager(linearServiceManager);
+        servicesAdapter = new ServicesAdapter(this, serviceItems);
+        mServiceList.setAdapter(servicesAdapter);
+        servicesAdapter.setItemClickListener(this);
+
+
+
+        mImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Take a picture after Installation
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, REQ_CODE_IMG);
+            }
+        });
+
+
+        mAddRecordBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //On Adding Button Records
+                onRecordingData();
+            }
+        });
+    }
+
+    public void getServerData(){
+
+        if(!Utils.isInternetAvailable(this)) return;
+
+        Call<ResponseBody> getParameters = api.getParameters();
+        getParameters.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    try {
+                        parseData(response.body().string());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+                    Snackbar.make(mImg, R.string.server_reachable_error, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                String message = t.getMessage();
+                Log.d("failure", message);
+                Snackbar.make(mImg,R.string.wrong_error,Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void parseData(String response) throws JSONException {
+
+        shopItems.clear();
+        zoneItems.clear();
+        materialItems_competitor.clear();
+        competitorItems.clear();
+        materialItems_installed.clear();
+        regionItems.clear();
+
+        JSONObject data = new JSONObject(response);
+        Log.d(TAG, data.toString());
+        if(data.getInt("status_code") == 200){
+            //Clear data from Database
+            try {
+                //Delete all from tables
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        zoneDbRealmResults.deleteAllFromRealm();
+                        regionDbRealmResults.deleteAllFromRealm();
+                        shopTypeDbRealmResults.deleteAllFromRealm();
+                        materialsDbRealmResults.deleteAllFromRealm();
+                        Log.d("TAG","Deleted all available data");
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            JSONObject dataObj = data.getJSONObject("data");
+
+            //Getting ZoneData's
+            if(!dataObj.isNull("zones")){
+                JSONArray zonesArray = dataObj.getJSONArray("zones");
+                int count_zone = zonesArray.length();
+                for(int i = 0; i<count_zone; i++){
+                    JSONObject zoneObj = zonesArray.getJSONObject(i);
+                    ZoneItem zoneItem = new ZoneItem();
+                    if(!zoneObj.isNull("id"))
+                        zoneItem.setId(zoneObj.getString("id"));
+                    if(!zoneObj.isNull("zone_name"))
+                        zoneItem.setLocation_name(zoneObj.getString("zone_name"));
+                    zoneItems.add(zoneItem);
+                }
+                zoneAdapter.notifyDataSetChanged();
+
+                if(zoneItems.size() > 0){
+                    //persist data to local database
+                    Zone_db.persistToDatabase(zoneItems);
+                }
+
+            }
+
+            //Getting RegionData's
+            if(!dataObj.isNull("regions")){
+                JSONArray regionsArray = dataObj.getJSONArray("regions");
+                int count_region = regionsArray.length();
+                for(int i = 0; i<count_region; i++){
+                    JSONObject regionObj = regionsArray.getJSONObject(i);
+                    RegionItem regionItem = new RegionItem();
+                    if(!regionObj.isNull("id"))
+                        regionItem.setId(regionObj.getString("id"));
+                    if(!regionObj.isNull("region_name"))
+                        regionItem.setLocation_name(regionObj.getString("region_name"));
+                    if(!regionObj.isNull("zone_id"))
+                        regionItem.setZone_id(regionObj.getString("zone_id"));
+                    regionItems.add(regionItem);
+                }
+
+                if(regionItems.size() > 0){
+                    Log.d("TAG",regionItems.toString());
+                    //persist data to local database
+                    Region_db.persistToDatabase(regionItems);
+                }
+            }
+
+            //Getting ShopType Data
+            if(!dataObj.isNull("shop_type")){
+                JSONArray shopTypeArray = dataObj.getJSONArray("shop_type");
+                int count_shop = shopTypeArray.length();
+                for(int i = 0; i<count_shop; i++){
+                    JSONObject shopObj = shopTypeArray.getJSONObject(i);
+                    ShopItem shopItem = new ShopItem();
+                    if(!shopObj.isNull("id"))
+                        shopItem.setId(shopObj.getString("id"));
+                    if(!shopObj.isNull("shop_type"))
+                        shopItem.setShop_type(shopObj.getString("shop_type"));
+                    shopItems.add(shopItem);
+                }
+                shopAdapter.notifyDataSetChanged();
+
+                if(shopItems.size() > 0){
+                    //persist data to local database
+                    ShopType_db.persistToDatabase(shopItems);
+                }
+
+            }
+
+            //Getting Materials  Data
+            if(!dataObj.isNull("material_type")){
+                JSONArray materialTypeArray = dataObj.getJSONArray("material_type");
+                int count_material = materialTypeArray.length();
+                for(int i = 0; i<count_material; i++){
+                    JSONObject materialObj = materialTypeArray.getJSONObject(i);
+                    MaterialItem materialItem = new MaterialItem();
+                    if(!materialObj.isNull("id"))
+                        materialItem.setId(materialObj.getString("id"));
+                    if(!materialObj.isNull("material_type"))
+                        materialItem.setName(materialObj.getString("material_type"));
+                    materialItems_competitor.add(materialItem);
+                    materialItems_installed.add(materialItem);
+                }
+                competitorAdapter.notifyDataSetChanged();
+                materialAdapter.notifyDataSetChanged();
+
+                if(materialItems_installed.size() > 0){
+                    //persist data to local database
+                    Materials_db.persistToDatabase(materialItems_installed);
+                }
+            }
+        }
+
+    }
+
+
+    public void onRecordingData(){
+        DistrictData = mDistrict.getText().toString();
+        SuburbData = mSuburb.getText().toString();
+        StreetData = mStreet.getText().toString();
+        PosNameData = mPosName.getText().toString();
+        ContactData = mContactPerson.getText().toString();
+        PhoneData = mPhoneNumber.getText().toString();
+        PosCodeData = mPosCode.getText().toString();
+        LatData = String.valueOf(MLATITUDE);
+        LonData = String.valueOf(MLONGITUDE);
+
+        // Check for a valid Zone, if the user enter one.
+        if(TextUtils.isEmpty(ZoneData)){
+            Snackbar.make(mAddRecordBtn,getString(R.string.zone_error), Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check for a valid Region, if the user enter one.
+        if(TextUtils.isEmpty(RegionData)){
+            Snackbar.make(mAddRecordBtn,getString(R.string.region_error), Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check for a valid District
+        if(TextUtils.isEmpty(DistrictData)){
+            mDistrict.setError(getString(R.string.district_error));
+            mDistrict.requestFocus();
+            return;
+        }
+
+        // Check for a valid Suburb
+        if(TextUtils.isEmpty(SuburbData)){
+            mSuburb.setError(getString(R.string.suburb_error));
+            mSuburb.requestFocus();
+            return;
+        }
+
+        // Check for a valid Street
+        if(TextUtils.isEmpty(StreetData)){
+            mStreet.setError(getString(R.string.street_error));
+            mStreet.requestFocus();
+            return;
+        }
+
+        // Check for a valid Pos Name
+        if(TextUtils.isEmpty(PosNameData)){
+            mPosName.setError(getString(R.string.pos_name_error));
+            mPosName.requestFocus();
+            return;
+        }
+
+        // Check for a valid Contact Person
+        if(TextUtils.isEmpty(ContactData)){
+            mContactPerson.setError(getString(R.string.contact_error));
+            mContactPerson.requestFocus();
+            return;
+        }
+
+        // Check for a valid Contact Person
+        if(TextUtils.isEmpty(PhoneData)){
+            mPhoneNumber.setError(getString(R.string.phone_error));
+            mPhoneNumber.requestFocus();
+            return;
+        }
+        // Check for a valid Shop Type, if the user enter one.
+        if(TextUtils.isEmpty(ShopData)){
+            Snackbar.make(mAddRecordBtn,getString(R.string.shop_error), Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check for a valid Shop Type, if the user enter one.
+        if(TextUtils.isEmpty(ImgData)){
+            Snackbar.make(mAddRecordBtn,getString(R.string.picture_error), Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    //Query Region based on Zone
+    public void getReligionData(String zoneID){
+        regionItems.clear();
+        //Query the Database
+        regionDbRealmResults = realm.where(Region_db.class).equalTo("zone_id", zoneID).findAll();
+        if(regionDbRealmResults != null && regionDbRealmResults.size() > 0){
+            for(Region_db regionDb: regionDbRealmResults){
+                regionItems.add(new RegionItem(regionDb));
+            }
+            regionAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE_IMG && resultCode == Activity.RESULT_OK && data != null) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            mImg.setImageBitmap(photo);
+            ImgData = Utils.bitmapToBase64(photo);
+        }
+    }
+
+    public void onRadioBrandingBtn(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_yes:
+                if (checked)
+                    break;
+            case R.id.radio_no:
+                if (checked)
+                    break;
+        }
+    }
+
+    @Override
+    public void onCompetitorItemClick(View view, ArrayList<CompetitorItem> competitorItems) {
+        competitorItems.addAll(competitorItems);
+        Log.d("Added", competitorItems.get(0).getName());
+    }
+
+    @Override
+    public void onCompetitorRemoveItemClick(View view, CompetitorItem position) {
+        try {
+            if(competitorItems.size() != 0){
+                int indexID = getCompetitor(position);
+                competitorItems.remove(indexID);
+                for (int i = 0; i<competitorItems.size(); i++){
+                    Log.d("Competitors",competitorItems.get(i).getName());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private int getCompetitor(CompetitorItem position) {
+        return competitorItems.indexOf(position);
+    }
+
+    @Override
+    public void onComMaterialClick(View view, ArrayList<MaterialItem> materialItems) {
+        materialItems_competitor.addAll(materialItems);
+        Log.d("Added", materialItems_competitor.get(0).getName());
+    }
+
+    @Override
+    public void onComMaterialRemoveClick(View view, MaterialItem position) {
+        try {
+            if(materialItems_competitor.size() != 0){
+                int indexID = getCompetitorMaterials(position);
+                materialItems_competitor.remove(indexID);
+                for (int i = 0; i<materialItems_competitor.size(); i++){
+                    Log.d("Competitors Materials",materialItems_competitor.get(i).getName());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private int getCompetitorMaterials(MaterialItem position) {
+        return materialItems_competitor.indexOf(position);
+    }
+
+    @Override
+    public void onMaterialClick(View view, ArrayList<MaterialItem> materialItems) {
+        materialItems_installed.addAll(materialItems);
+        Log.d("Added", materialItems.get(0).getName());
+    }
+
+    @Override
+    public void onMaterialRemoveClick(View view, MaterialItem position) {
+        try {
+            if(materialItems_installed.size() != 0){
+                int indexID = getCompetitorMaterials(position);
+                materialItems_installed.remove(indexID);
+                for (int i = 0; i<materialItems_installed.size(); i++){
+                    Log.d("Materials Installed",materialItems_installed.get(i).getName());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onServiceItemClick(View view, ArrayList<ServiceItem> Items) {
+        serviceItems.addAll(Items);
+        Log.d("Added", serviceItems.get(0).getName());
+    }
+
+    @Override
+    public void onServiceRemoveItemClick(View view, ServiceItem position) {
+        try {
+            if(serviceItems.size() != 0){
+                int indexID = getService(position);
+                serviceItems.remove(indexID);
+                for (int i = 0; i<serviceItems.size(); i++){
+                    Log.d("Services",serviceItems.get(i).getName());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private int getService(ServiceItem position) {
+        return serviceItems.indexOf(position);
     }
 }

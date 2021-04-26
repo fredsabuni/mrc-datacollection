@@ -19,6 +19,7 @@ import com.mrc.reports.utils.AccountUtils;
 public class Home_ui extends AppCompatActivity {
 
     RelativeLayout mReportsBtn;
+    RelativeLayout mSurveyBtn;
     TextView mUsername;
 
     @Override
@@ -39,11 +40,19 @@ public class Home_ui extends AppCompatActivity {
         });
 
         mReportsBtn = findViewById(R.id.reports_btn);
+        mSurveyBtn = findViewById(R.id.survey_btn);
 
         mReportsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Home_ui.this, Reports_ui.class));
+            }
+        });
+
+        mSurveyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home_ui.this, Survey_ui.class));
             }
         });
 

@@ -27,6 +27,8 @@
     <string name="shop_type_txt">Shop Type</string>
     <string name="material_type_txt">Type of Materials Removed</string>
     <string name="material_installed_txt">Type of Materials Installed</string>
+    <string name="categories_txt">Category of Branding</string>
+    <string name="competitor_material_txt">Competitors Materials Installed</string>
     <string name="branding_txt">Is the POS Branded?</string>
     <string name="service_txt">Service Offered</string>
     <string name="competitor_txt">Competitor</string>
@@ -55,8 +57,6 @@
     <string name="cancel">Cancel</string>
     <string name="logout">Logout</string>
     <string name="logout_help">Do you want to logout from MRC-Tool?</string>
-
-
     <string name="zone_error">Please select the Zone</string>
     <string name="region_error">Please select the Region</string>
     <string name="district_error">Please enter the District</string>
@@ -75,7 +75,7 @@
     <string name="try_refresh">Please try to refresh the page</string>
     <string name="title_activity_update_ui">Update Data</string>
     <string name="title_activity_about_us">AboutUs</string>
-    <string name="title_activity_basic_ui">Basic_ui</string>
+    <string name="title_activity_basic_ui">Survey</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

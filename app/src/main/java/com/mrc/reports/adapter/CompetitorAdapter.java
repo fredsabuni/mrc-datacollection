@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class CompetitorAdapter extends RecyclerView.Adapter<CompetitorAdapter.ViewHolder> {
-    private ItemClickListener onItemClickListener;
+    private CompetitorClickListener competitorClickListener;
     private LayoutInflater layoutInflater;
     public static ArrayList<CompetitorItem> mList;
     private Context mContext;
@@ -26,13 +26,13 @@ public class CompetitorAdapter extends RecyclerView.Adapter<CompetitorAdapter.Vi
     String ID;
     ArrayList<CompetitorItem> competitorItems = new ArrayList<>();
 
-    public void setItemClickListener(ItemClickListener clickListener) {
-        onItemClickListener = clickListener;
+    public void setItemClickListener(CompetitorClickListener clickListener) {
+        competitorClickListener = clickListener;
     }
 
-    public interface ItemClickListener {
-        void onItemClick(View view, ArrayList<CompetitorItem> competitorItems);
-        void onRemoveItemClick(View view, CompetitorItem position);
+    public interface CompetitorClickListener {
+        void onCompetitorItemClick(View view, ArrayList<CompetitorItem> competitorItems);
+        void onCompetitorRemoveItemClick(View view, CompetitorItem position);
     }
 
     public CompetitorAdapter(Context context, ArrayList<CompetitorItem> list){
@@ -40,7 +40,6 @@ public class CompetitorAdapter extends RecyclerView.Adapter<CompetitorAdapter.Vi
         mContext = context;
         mList = list;
     }
-
 
     @NonNull
     @Override
@@ -66,7 +65,7 @@ public class CompetitorAdapter extends RecyclerView.Adapter<CompetitorAdapter.Vi
                     competitorItems.add(new CompetitorItem(ID,mList.get(position).getName()));
                 }else {
                     CompetitorItem competitorItem = new CompetitorItem(ID, mList.get(position).getName());
-                    onItemClickListener.onRemoveItemClick(compoundButton,competitorItem);
+                    competitorClickListener.onCompetitorRemoveItemClick(compoundButton,competitorItem);
                 }
             }
         });
