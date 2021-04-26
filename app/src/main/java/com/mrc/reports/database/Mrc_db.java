@@ -11,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Mrc_db extends RealmObject {
 
-    //Status
+    // Status
     // 1 = needs update = orange
     // 2 = data has been updated not sync = purple
     // 3 = updated + sync = green

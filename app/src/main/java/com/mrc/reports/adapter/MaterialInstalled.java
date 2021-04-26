@@ -75,7 +75,6 @@ public class MaterialInstalled extends RecyclerView.Adapter<MaterialInstalled.Vi
                     holder.mQuantity.setFocusableInTouchMode(true);
                     holder.mQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-
                     holder.mQuantity.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

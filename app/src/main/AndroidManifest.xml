@@ -20,6 +20,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.AddSurvey_ui"
+            android:label="@string/title_activity_add_survey_ui"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.Survey_ui"
+            android:label="@string/title_activity_basic_ui"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".ui.AboutUs"
             android:label="@string/title_activity_about_us"
             android:parentActivityName=".ui.Settings_ui"
@@ -71,11 +79,11 @@
         <activity
             android:name=".ui.Home_ui"
             android:label="@string/title_activity_home_ui"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.SignIn_ui"
             android:label="@string/title_activity_sign_in_ui"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.Splash_ui"
             android:label="@string/app_name"

@@ -209,6 +209,32 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
             }
         });
 
+        if(zoneItems.size() == 0){
+            try{
+                //Query the Database
+                zoneDbRealmResults = realm.where(Zone_db.class).findAll();
+                if(zoneDbRealmResults != null && zoneDbRealmResults.size() > 0){
+                    for(Zone_db zone_db: zoneDbRealmResults){
+                        zoneItems.add(new ZoneItem(zone_db));
+                    }
+                    zoneAdapter.notifyDataSetChanged();
+
+                    //setSelected country Adapter
+                    for(int i=0; i < zoneAdapter.getCount(); i++) {
+                        if(!TextUtils.isEmpty(mCurrentItem.getZone_id())) {
+                            if (mCurrentItem.getZone_id().trim().equals(zoneAdapter.getItem(i).getId())) {
+                                mZoneSpinner.setSelection(i);
+                                ZoneData = mCurrentItem.getZone_id();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
         //Zone Spinner
         zoneAdapter = new ZoneAdapter(this,zoneItems);
         mZoneSpinner.setAdapter(zoneAdapter);
@@ -219,7 +245,6 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
                 ZoneData = clickedItem.getId();
                 //get CityData
                 getReligionData(clickedItem.getId());
-
             }
 
             @Override
@@ -244,6 +269,32 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
 
             }
         });
+
+        if(shopItems.size() == 0){
+            try{
+                //Query the Database
+                shopTypeDbRealmResults = realm.where(ShopType_db.class).findAll();
+                if(shopTypeDbRealmResults != null && shopTypeDbRealmResults.size() > 0){
+                    for(ShopType_db shopType_db: shopTypeDbRealmResults){
+                        shopItems.add(new ShopItem(shopType_db));
+                    }
+                    shopAdapter.notifyDataSetChanged();
+
+                    //setSelected Shop Adapter
+                    for(int i=0; i < shopAdapter.getCount(); i++) {
+                        if(!TextUtils.isEmpty(mCurrentItem.getShop_type_id())) {
+                            if (mCurrentItem.getShop_type_id().trim().equals(shopAdapter.getItem(i).getId())) {
+                                mShopSpinner.setSelection(i);
+                                ShopData = mCurrentItem.getShop_type_id();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         //Shop Type Spinner
         shopAdapter = new ShopAdapter(this,shopItems);
@@ -644,32 +695,28 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
 
         shopItems.clear();
         zoneItems.clear();
-        materialItems_removed.clear();
-        materialItems_installed.clear();
-
-        //Clear data from Database
-        try {
-            //Delete all from tables
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-//                    zoneDbRealmResults.deleteAllFromRealm();
-                    regionDbRealmResults.deleteAllFromRealm();
-//                    shopTypeDbRealmResults.deleteAllFromRealm();
-//                    materialsDbRealmResults.deleteAllFromRealm();
-                    Log.d("TAG","Deleted all available data");
-                }
-            });
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         JSONObject data = new JSONObject(response);
         Log.d(TAG, data.toString());
         if(data.getInt("status_code") == 200){
-            JSONObject dataObj = data.getJSONObject("data");
+            //Clear data from Database
+            try {
+                //Delete all from tables
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        zoneDbRealmResults.deleteAllFromRealm();
+                        regionDbRealmResults.deleteAllFromRealm();
+                        shopTypeDbRealmResults.deleteAllFromRealm();
+                        Log.d("TAG","Deleted all available data");
+                    }
+                });
 
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            JSONObject dataObj = data.getJSONObject("data");
             //Getting ZoneData's
             if(!dataObj.isNull("zones")){
                 JSONArray zonesArray = dataObj.getJSONArray("zones");
@@ -684,6 +731,12 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
                     zoneItems.add(zoneItem);
                 }
                 zoneAdapter.notifyDataSetChanged();
+
+                if(zoneItems.size() > 0){
+                    Log.d("TAG",zoneItems.toString());
+                    //persist data to local database
+                    Zone_db.persistToDatabase(zoneItems);
+                }
 
                 //setSelected country Adapter
                 for(int i=0; i < zoneAdapter.getCount(); i++) {
@@ -738,6 +791,12 @@ public class Update_ui extends BaseActivity implements UpdateRemovedAdapter.Item
                     shopItems.add(shopItem);
                 }
                 shopAdapter.notifyDataSetChanged();
+
+                if(shopItems.size() > 0){
+                    Log.d("TAG",shopItems.toString());
+                    //persist data to local database
+                    ShopType_db.persistToDatabase(shopItems);
+                }
 
                 //setSelected country Adapter
                 for(int i=0; i < shopAdapter.getCount(); i++) {

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.AddRecords_ui"
-    tools:showIn="@layout/activity_add_records_ui">
+    tools:context=".ui.AddSurvey_ui"
+    tools:showIn="@layout/add_survey_ui">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -296,7 +296,6 @@
                 android:textColor="@color/grey_700"
                 android:text="@string/shop_type_txt"/>
 
-
             <Spinner
                 android:id="@+id/shop_type_spinner"
                 android:layout_width="0dp"
@@ -306,6 +305,53 @@
                 android:layout_weight="2" />
 
         </LinearLayout>
+
+        <TextView android:id="@+id/material_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:text="@string/branding_txt"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:textAllCaps="true"/>
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/radio_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yes_txt"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:onClick="onRadioBrandingBtn" />
+            <RadioButton android:id="@+id/radio_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_txt"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:onClick="onRadioBrandingBtn"/>
+        </RadioGroup>
+
+        <TextView android:id="@+id/services_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:text="@string/service_txt"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:textAllCaps="true"/>
+
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/service_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_4sdp" />
 
         <TextView android:id="@+id/material_installed_title"
             android:layout_width="wrap_content"
@@ -317,13 +363,44 @@
             android:layout_marginLeft="@dimen/_16sdp"
             android:textAllCaps="true"/>
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/material_installed_list"
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/material_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="@dimen/_4sdp" />
 
+        <TextView android:id="@+id/competitor_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:text="@string/competitor_txt"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:textAllCaps="true"/>
 
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/competitor_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_4sdp" />
+
+        <TextView android:id="@+id/installed_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:text="@string/material_installed_txt"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:textAllCaps="true"/>
+
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/competitor_material_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_4sdp" />
 
         <TextView android:id="@+id/before_title"
             android:layout_width="wrap_content"
@@ -333,7 +410,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="true"
-            android:text="@string/before_txt"/>
+            android:text="@string/pos_images"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -351,65 +428,13 @@
                 android:theme="@style/MyBeforeBtn"/>
 
             <ImageView
-                android:id="@+id/before_img"
+                android:id="@+id/pos_img"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_16sdp" />
 
         </LinearLayout>
-
-        <TextView android:id="@+id/after_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/_12ssp"
-            android:layout_marginLeft="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:textColor="@color/colorPrimary"
-            android:textAllCaps="true"
-            android:text="@string/after_txt"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="@dimen/_16sdp"
-            android:layout_marginTop="@dimen/_8sdp">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/after_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/camera_icon"
-                android:layout_gravity="center"
-                android:theme="@style/MyAfterBtn"/>
-
-            <ImageView android:id="@+id/after_img"
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/_16sdp"/>
-
-
-        </LinearLayout>
-
-        <TextView android:id="@+id/material_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:layout_marginLeft="@dimen/_16sdp"
-            android:text="@string/material_type_txt"
-            android:textAllCaps="true"/>
-
-
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/material_removed_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/_4sdp" />
-
 
         <Button android:id="@+id/add_record_btn"
             android:layout_width="match_parent"
@@ -425,7 +450,5 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
-
-
 
 </ScrollView>

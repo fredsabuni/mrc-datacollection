@@ -13,16 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/_16sdp"
         android:gravity="center">
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_120sdp"
             android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/_32sdp">
+            android:layout_marginBottom="@dimen/_8sdp">
 
             <RelativeLayout android:id="@+id/reports_btn"
                 android:layout_width="match_parent"
@@ -39,7 +36,6 @@
                     android:layout_alignParentRight="true"
                     android:src="@mipmap/records_icon"
                     android:layout_margin="@dimen/_16sdp"/>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,10 +46,41 @@
                     android:layout_marginLeft="@dimen/_16sdp"
                     android:layout_marginBottom="@dimen/_16sdp"
                     android:textStyle="bold"/>
-
-
             </RelativeLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_120sdp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/_8sdp">
+
+            <RelativeLayout android:id="@+id/survey_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/survey_btn"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_16sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_38sdp"
+                    android:layout_height="@dimen/_38sdp"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/records_icon"
+                    android:layout_margin="@dimen/_16sdp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_txt"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14ssp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginBottom="@dimen/_16sdp"
+                    android:textStyle="bold"/>
+            </RelativeLayout>
         </LinearLayout>
 
     </LinearLayout>

@@ -9,7 +9,8 @@
     <string name="hello_txt">MRC</string>
     <string name="hello_desc_txt">INNOVATE MARKETING</string>
     <string name="title_activity_home_ui">Home_ui</string>
-    <string name="records_txt">Manage Records</string>
+    <string name="records_txt">Manage Branding</string>
+    <string name="survey_txt">Manage Survey</string>
     <string name="title_activity_manage__records_ui">Manage Records</string>
     <string name="title_activity_manage_records_ui">Manage Records</string>
     <string name="title_activity_reports_ui">Manage Reports</string>
@@ -26,6 +27,9 @@
     <string name="shop_type_txt">Shop Type</string>
     <string name="material_type_txt">Type of Materials Removed</string>
     <string name="material_installed_txt">Type of Materials Installed</string>
+    <string name="branding_txt">Is the POS Branded?</string>
+    <string name="service_txt">Service Offered</string>
+    <string name="competitor_txt">Competitor</string>
     <string name="before_txt">Before Installation</string>
     <string name="after_txt">After Installation</string>
     <string name="save_txt">Save</string>
@@ -39,6 +43,8 @@
     <string name="version_txt">Version 1.3</string>
     <string name="about_details_txt">Get to know more about us</string>
     <string name="logout_txt">Log out</string>
+    <string name="yes_txt">Yes</string>
+    <string name="no_txt">No</string>
     <string name="quantity_txt">Quantity</string>
     <string name="title_activity_camera_ui">Camera</string>
     <string name="image">image</string>
@@ -60,6 +66,7 @@
     <string name="contact_error">Please enter the Contact Person</string>
     <string name="phone_error">Please enter the Phone Number</string>
     <string name="pos_code_error">Please enter the Pos Code</string>
+    <string name="pos_images">POS Image</string>
     <string name="shop_error">Please select the Shop Type</string>
     <string name="picture_error">Please take a picture</string>
 
@@ -68,6 +75,16 @@
     <string name="try_refresh">Please try to refresh the page</string>
     <string name="title_activity_update_ui">Update Data</string>
     <string name="title_activity_about_us">AboutUs</string>
+    <string name="title_activity_basic_ui">Basic_ui</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_add_survey_ui">AddSurvey_ui</string>
 
 
 </resources>

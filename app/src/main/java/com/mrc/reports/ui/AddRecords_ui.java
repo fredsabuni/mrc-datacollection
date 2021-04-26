@@ -146,6 +146,25 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
         //get Data from Server
         getServerData();
 
+        if(materialItems_removed.size() == 0){
+            try{
+                //Query the Database
+                materialsDbRealmResults = realm.where(Materials_db.class).findAll();
+                if(materialsDbRealmResults != null && materialsDbRealmResults.size() > 0){
+                    for(Materials_db materials_db: materialsDbRealmResults){
+                        materialItems_removed.add(new MaterialItem(materials_db));
+                        materialItems_installed.add(new MaterialItem(materials_db));
+                    }
+                    materialAdapter_in.notifyDataSetChanged();
+                    materialAdapter_.notifyDataSetChanged();
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
         //Setting Material Removed Adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRemovedList.setLayoutManager(linearLayoutManager);
@@ -165,8 +184,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
             @Override
             public void onClick(View view) {
                 //Take a picture before Installation
-//                Intent cameraActivity = new Intent(AddRecords_ui.this,Camera_ui.class);
-//                startActivityForResult(cameraActivity,REQ_CODE_BEFORE);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, REQ_CODE_BEFORE);
             }
@@ -180,6 +197,21 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                 startActivityForResult(cameraIntent, REQ_CODE_AFTER);
             }
         });
+
+        if(zoneItems.size() == 0){
+            try{
+                //Query the Database
+                zoneDbRealmResults = realm.where(Zone_db.class).findAll();
+                if(zoneDbRealmResults != null && zoneDbRealmResults.size() > 0){
+                    for(Zone_db zone_db: zoneDbRealmResults){
+                        zoneItems.add(new ZoneItem(zone_db));
+                    }
+                    zoneAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         //Zone Spinner
         zoneAdapter = new ZoneAdapter(this,zoneItems);
@@ -215,6 +247,21 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
 
             }
         });
+
+        if(shopItems.size() == 0){
+            try{
+                //Query the Database
+                shopTypeDbRealmResults = realm.where(ShopType_db.class).findAll();
+                if(shopTypeDbRealmResults != null && shopTypeDbRealmResults.size() > 0){
+                    for(ShopType_db shopType_db: shopTypeDbRealmResults){
+                        shopItems.add(new ShopItem(shopType_db));
+                    }
+                    shopAdapter.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         //Shop Type Spinner
         shopAdapter = new ShopAdapter(this,shopItems);
@@ -450,28 +497,29 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
         zoneItems.clear();
         materialItems_removed.clear();
         materialItems_installed.clear();
-
-        //Clear data from Database
-        try {
-            //Delete all from tables
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-//                    zoneDbRealmResults.deleteAllFromRealm();
-                    regionDbRealmResults.deleteAllFromRealm();
-//                    shopTypeDbRealmResults.deleteAllFromRealm();
-//                    materialsDbRealmResults.deleteAllFromRealm();
-                    Log.d("TAG","Deleted all available data");
-                }
-            });
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        regionItems.clear();
 
         JSONObject data = new JSONObject(response);
         Log.d(TAG, data.toString());
         if(data.getInt("status_code") == 200){
+            //Clear data from Database
+            try {
+                //Delete all from tables
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                    zoneDbRealmResults.deleteAllFromRealm();
+                    regionDbRealmResults.deleteAllFromRealm();
+                    shopTypeDbRealmResults.deleteAllFromRealm();
+                    materialsDbRealmResults.deleteAllFromRealm();
+                    Log.d("TAG","Deleted all available data");
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             JSONObject dataObj = data.getJSONObject("data");
 
             //Getting ZoneData's
@@ -488,6 +536,11 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                     zoneItems.add(zoneItem);
                 }
                 zoneAdapter.notifyDataSetChanged();
+
+                if(zoneItems.size() > 0){
+                    //persist data to local database
+                    Zone_db.persistToDatabase(zoneItems);
+                }
 
             }
 
@@ -512,8 +565,6 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                     //persist data to local database
                     Region_db.persistToDatabase(regionItems);
                 }
-
-
             }
 
             //Getting ShopType Data
@@ -530,6 +581,11 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                     shopItems.add(shopItem);
                 }
                 shopAdapter.notifyDataSetChanged();
+
+                if(shopItems.size() > 0){
+                    //persist data to local database
+                    ShopType_db.persistToDatabase(shopItems);
+                }
 
             }
 
@@ -549,6 +605,11 @@ public class AddRecords_ui extends BaseActivity implements MaterialRemoved.ItemC
                 }
                 materialAdapter_in.notifyDataSetChanged();
                 materialAdapter_.notifyDataSetChanged();
+
+                if(materialItems_removed.size() > 0){
+                    //persist data to local database
+                    Materials_db.persistToDatabase(materialItems_removed);
+                }
             }
         }
 

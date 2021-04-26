@@ -9,9 +9,6 @@ public class MaterialItem {
     String status;
     String indexID;
 
-
-
-
     public MaterialItem(){}
 
     public MaterialItem(String name, String status){
