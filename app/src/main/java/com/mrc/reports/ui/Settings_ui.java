@@ -21,7 +21,9 @@ import com.mrc.reports.BaseActivity;
 import com.mrc.reports.R;
 import com.mrc.reports.database.Mrc_db;
 import com.mrc.reports.database.Region_db;
+import com.mrc.reports.database.Survey_db;
 import com.mrc.reports.model.MrcItem;
+import com.mrc.reports.model.SurveyItem;
 import com.mrc.reports.utils.AccountUtils;
 import com.mrc.reports.utils.Utils;
 
@@ -49,8 +51,11 @@ public class Settings_ui extends BaseActivity {
     Realm realm;
 
     ArrayList<MrcItem> mrcItems = new ArrayList<>();
+    ArrayList<SurveyItem> surveyItems = new ArrayList<>();
     private RealmResults<Mrc_db> mrc_dbRealmResults;
+    private RealmResults<Survey_db> survey_dbRealmResults;
     public final int STATUS_NEEDS_UPLOADED = 3;
+    public final int STATUS_SURVEY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +107,140 @@ public class Settings_ui extends BaseActivity {
         mSyncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchDatabaseData();
+//                fetchDatabaseData();
+                fetchSurveyData();
             }
         });
+    }
+
+    public void fetchSurveyData(){
+        surveyItems.clear();
+        survey_dbRealmResults = realm.where(Survey_db.class).equalTo("status", 1).findAll();
+        if(survey_dbRealmResults !=null && survey_dbRealmResults.size() > 0){
+            for(Survey_db survey_db: survey_dbRealmResults){
+                surveyItems.add(new SurveyItem(survey_db));
+            }
+        }
+
+        if(surveyItems != null){
+            if(!Utils.isInternetAvailable(this)) return;
+            progressDialog.show();
+
+            int count = surveyItems.size();
+
+            JSONObject detailsObj = new JSONObject();
+            JSONArray finalDetailsArray = new JSONArray();
+            JSONArray materialArray = new JSONArray();
+            JSONArray materialFinalArray = new JSONArray();
+            JSONArray serviceArray = new JSONArray();
+            JSONArray serviceFinalArray = new JSONArray();
+            JSONArray categoryArray = new JSONArray();
+            JSONArray categoryFinalArray = new JSONArray();
+            JSONArray competitorArray = new JSONArray();
+            JSONArray competitorFinalArray = new JSONArray();
+            JSONArray competitorMaterialArray = new JSONArray();
+            JSONArray competitorMaterialFinalArray = new JSONArray();
+
+            try {
+                for(int i = 0; i < count; i++){
+
+                    detailsObj.put("survey_pos_name", surveyItems.get(i).getPos_name());
+                    detailsObj.put("survey_pos_code", surveyItems.get(i).getPos_code());
+                    detailsObj.put("survey_pos_type", surveyItems.get(i).getShop_type_id());
+                    detailsObj.put("survey_pos_lat", surveyItems.get(i).getLat());
+                    detailsObj.put("survey_pos_long", surveyItems.get(i).getLon());
+                    detailsObj.put("survey_district", surveyItems.get(i).getDistrict_id());
+                    detailsObj.put("survey_suburb", surveyItems.get(i).getSuburb());
+                    detailsObj.put("survey_street", surveyItems.get(i).getStreet());
+                    detailsObj.put("survey_region_id", surveyItems.get(i).getRegion_id());
+                    detailsObj.put("survey_zone_id", surveyItems.get(i).getZone_id());
+                    detailsObj.put("survey_contact_person", surveyItems.get(i).getContact_person());
+                    detailsObj.put("survey_phone_number", surveyItems.get(i).getPhone_number());
+                    detailsObj.put("survey_branding_status", surveyItems.get(i).getBranding());
+
+                    //Survey Data
+                    for(int j = 0; j<surveyItems.get(i).getSurveyServiceLists().size(); j++){
+                        JSONObject servicesObj = new JSONObject();
+                        servicesObj.put("survey_service_offered", surveyItems.get(i).getSurveyServiceLists().get(j).getName());
+                        serviceArray.put(servicesObj);
+                    }
+                    serviceFinalArray.put(serviceArray);
+                    detailsObj.put("services", serviceFinalArray);
+
+                    //Category Data
+                    for(int j = 0; j<surveyItems.get(i).getSurveyCategoryLists().size(); j++){
+                        JSONObject categoryObj = new JSONObject();
+                        categoryObj.put("survey_pos_category", surveyItems.get(i).getSurveyCategoryLists().get(j).getName());
+                        categoryArray.put(categoryObj);
+                    }
+                    categoryFinalArray.put(serviceArray);
+                    detailsObj.put("category", categoryFinalArray);
+
+                    //Competitor Data
+                    for(int j = 0; j<surveyItems.get(i).getSurveyCompetitorLists().size(); j++){
+                        JSONObject competitorObj = new JSONObject();
+                        competitorObj.put("survey_competitor", surveyItems.get(i).getSurveyCompetitorLists().get(j).getName());
+                        competitorArray.put(competitorObj);
+                    }
+                    competitorFinalArray.put(competitorArray);
+                    detailsObj.put("competitors", competitorArray);
+
+                    //Competitor Materials Data
+                    for(int j = 0; j<surveyItems.get(i).getSurveyComMaterialLists().size(); j++){
+                        JSONObject competitorMaterialsObj = new JSONObject();
+                        competitorMaterialsObj.put("survey_competitor_material", surveyItems.get(i).getSurveyComMaterialLists().get(j).getType());
+                        competitorMaterialArray.put(competitorMaterialsObj);
+                    }
+                    competitorMaterialFinalArray.put(competitorMaterialArray);
+                    detailsObj.put("competitorMaterialArray", competitorMaterialFinalArray);
+
+                    //Materials Data
+                    for(int j = 0; j<surveyItems.get(i).getSurveyMaterialLists().size(); j++){
+                        JSONObject materialsObj = new JSONObject();
+                        materialsObj.put("survey_material_branded", surveyItems.get(i).getSurveyMaterialLists().get(j).getType());
+                        materialArray.put(materialsObj);
+                    }
+                    materialFinalArray.put(materialArray);
+                    detailsObj.put("materials_installed", materialFinalArray);
+                    finalDetailsArray.put(detailsObj);
+
+                    retrofit2.Call<ResponseBody> syncPos = api.posSurvey(AccountUtils.getToken(this),AccountUtils.getPhone(this),finalDetailsArray.toString());
+                    syncPos.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            progressDialog.dismiss();
+                            if(response.isSuccessful()){
+                                try {
+                                    parseSurveyData(response.body().string());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                Snackbar.make(mLogoutBtn, "Could not reach server at this time please try again later", Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Snackbar.make(mLogoutBtn,"Something went wrong during login. Please try again",Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+
+
+
+        }
+
     }
 
 
@@ -212,6 +348,61 @@ public class Settings_ui extends BaseActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void parseSurveyData(String response) throws JSONException {
+
+        progressDialog.dismiss();
+        JSONObject loginObject = new JSONObject(response);
+        Log.d(TAG,"return String " + loginObject.toString());
+
+        String mMessage = "";
+
+        if(loginObject.getInt("code") == 200){
+            JSONObject responseObject = loginObject.getJSONObject("content");
+            if (!responseObject.isNull("message"))
+                mMessage = responseObject.getString("message");
+            Toast.makeText(this,mMessage,Toast.LENGTH_LONG).show();
+            if(surveyItems.size() > 0){
+
+                int count = surveyItems.size();
+                for(int i = 0; i < count; i++){
+                    //Save Data into Database
+                    realm.beginTransaction();
+                    Survey_db surveyDb = new Survey_db();
+                    String ID = surveyItems.get(i).getId();
+
+                    surveyDb.setSurvey_id(ID);
+                    surveyDb.setSurvey_zone_id(surveyItems.get(i).getZone_id());
+                    surveyDb.setSurvey_region_id(surveyItems.get(i).getRegion_id());
+                    surveyDb.setSurvey_district_id(surveyItems.get(i).getDistrict_id());
+                    surveyDb.setSurvey_suburb(surveyItems.get(i).getSuburb());
+                    surveyDb.setSurvey_street(surveyItems.get(i).getStreet());
+                    surveyDb.setSurvey_pos_name(surveyItems.get(i).getPos_name());
+                    surveyDb.setSurvey_contact_person(surveyItems.get(i).getContact_person());
+                    surveyDb.setSurvey_phone_number(surveyItems.get(i).getPhone_number());
+                    surveyDb.setSurvey_pos_code(surveyItems.get(i).getPos_code());
+                    surveyDb.setSurvey_shop_type_id(surveyItems.get(i).getShop_type_id());
+                    surveyDb.setSurveyMaterialLists(surveyItems.get(i).getSurveyMaterialLists());
+                    surveyDb.setSurveyCategoryLists(surveyItems.get(i).getSurveyCategoryLists());
+                    surveyDb.setSurveyCompetitorLists(surveyItems.get(i).getSurveyCompetitorLists());
+                    surveyDb.setSurveyComMaterialLists(surveyItems.get(i).getSurveyComMaterialLists());
+                    surveyDb.setSurvey_lon(surveyItems.get(i).getLon());
+                    surveyDb.setSurvey_lat(surveyItems.get(i).getLat());
+                    surveyDb.setSurvey_branding(surveyItems.get(i).getBranding());
+                    surveyDb.setStatus(STATUS_NEEDS_UPLOADED);
+                    //Insert Data into Database
+                    realm.copyToRealmOrUpdate(surveyDb);
+                    realm.commitTransaction();
+
+
+
+                }
+
+            }
+
+        }
+
     }
 
     public void parseSyncData(String response) throws JSONException {

@@ -42,6 +42,11 @@ public class Config {
         @POST("pos_sync_data")
         Call<ResponseBody> dataSync(@Field("token") String token, @Field("username") String username, @Field("data") String data);
 
+        //pos_survey
+        @FormUrlEncoded
+        @POST("pos_survey")
+        Call<ResponseBody> posSurvey(@Field("token") String token, @Field("username") String username, @Field("data") String data);
+
 
     }
 }

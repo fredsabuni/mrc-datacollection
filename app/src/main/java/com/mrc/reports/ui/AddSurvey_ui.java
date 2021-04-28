@@ -708,8 +708,6 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
             Log.d(TAG, "Data not saved");
         }
 
-
-
     }
 
     //Query Region based on Zone
