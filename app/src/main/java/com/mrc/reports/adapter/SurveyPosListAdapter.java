@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mrc.reports.R;
 import com.mrc.reports.database.MaterialTypeList;
-import com.mrc.reports.model.MrcItem;
+import com.mrc.reports.database.SurveyMaterialList;
+import com.mrc.reports.model.MaterialItem;
+import com.mrc.reports.model.SurveyItem;
 import com.mrc.reports.ui.Update_ui;
 import com.mrc.reports.utils.Utils;
 
@@ -31,52 +32,49 @@ import io.realm.RealmList;
 import static com.mrc.reports.ui.Update_ui.CURRENT_MATERIAL;
 import static com.mrc.reports.ui.Update_ui.CURRENT_MRC;
 
-public class PosListAdapter extends RecyclerView.Adapter<PosListAdapter.ViewHolder>  {
+public class SurveyPosListAdapter extends RecyclerView.Adapter<SurveyPosListAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;
-    private static ArrayList<MrcItem> mList;
-    private static RealmList<MaterialTypeList> materialTypeListRealmList;
+    private static ArrayList<SurveyItem> mList;
+    private static RealmList<SurveyMaterialList> surveyMaterialListRealmList;
     private Context mContext;
     Realm mRealm;
 
-    public PosListAdapter(Context context, ArrayList<MrcItem> mrcItems, Realm realm){
+    public SurveyPosListAdapter(Context context, ArrayList<SurveyItem> surveyItems, Realm realm){
         mContext = context;
-        mList = mrcItems;
+        mList = surveyItems;
         layoutInflater = LayoutInflater.from(context);
         mRealm = realm;
-
     }
 
     @NonNull
     @Override
-    public PosListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SurveyPosListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.pos_item, parent, false);
-        ViewHolder Holder = new ViewHolder(view);
+        SurveyPosListAdapter.ViewHolder Holder = new SurveyPosListAdapter.ViewHolder(view);
         return Holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final PosListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull SurveyPosListAdapter.ViewHolder holder, final int position) {
         holder.mPosName.setText(mList.get(position).getPos_name());
         holder.mPosCode.setText(mList.get(position).getPos_code());
 
         if(mList.get(position).getStatus() == 1){
             holder.mStatus.setTextColor(ContextCompat.getColor(mContext, R.color.orange_700));
             holder.mStatus.setText("Status: Pending");
-        }else if(mList.get(position).getStatus() == 2){
-            holder.mStatus.setTextColor(ContextCompat.getColor(mContext, R.color.purple_700));
-            holder.mStatus.setText("Status: Updated");
         }
-        else if(mList.get(position).getStatus() == 3){
+        else if(mList.get(position).getStatus() == 2){
             holder.mStatus.setTextColor(ContextCompat.getColor(mContext, R.color.green_700));
             holder.mStatus.setText("Status: uploaded");
         }
 
-        Bitmap photo = Utils.base64ToBitmap(mList.get(position).getBefore_img());
+        Bitmap photo = Utils.base64ToBitmap(mList.get(position).get_img());
         holder.mImg.setImageBitmap(photo);
 
 
-        final List<MaterialTypeList> materialType = new ArrayList<>();
-        materialType.addAll(mRealm.copyFromRealm(mList.get(position).getMaterialTypeLists()));
+        final List<SurveyMaterialList> materialType = new ArrayList<>();
+        materialType.addAll(mRealm.copyFromRealm(mList.get(position).getSurveyMaterialLists()));
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

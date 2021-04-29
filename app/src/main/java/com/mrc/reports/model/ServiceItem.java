@@ -6,6 +6,8 @@ public class ServiceItem {
     String Id;
     String Name;
 
+    public ServiceItem(){}
+
     public ServiceItem(String Id, String Name){
         this.Id = Id;
         this.Name = Name;

@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.mrc.reports.BaseActivity;
@@ -37,9 +38,7 @@ import com.mrc.reports.adapter.ShopAdapter;
 import com.mrc.reports.adapter.ZoneAdapter;
 import com.mrc.reports.database.Category_db;
 import com.mrc.reports.database.Competitor_db;
-import com.mrc.reports.database.MaterialTypeList;
 import com.mrc.reports.database.Materials_db;
-import com.mrc.reports.database.Mrc_db;
 import com.mrc.reports.database.Region_db;
 import com.mrc.reports.database.Service_db;
 import com.mrc.reports.database.ShopType_db;
@@ -85,8 +84,10 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     TextInputEditText mContactPerson;
     TextInputEditText mPhoneNumber;
     TextInputEditText mPosCode;
+    TextView mMaterialInstalledTitle;
     Button mAddRecordBtn;
     ImageView mImg;
+    FloatingActionButton mImgBtn;
     Spinner mZoneSpinner;
     Spinner mRegionSpinner;
     Spinner mShopSpinner;
@@ -97,7 +98,6 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     RecyclerView mCompetitorList;
     RecyclerView mCompetitorMaterialList;
     RecyclerView mCategoryList;
-    FloatingActionButton mBtn;
 
     ArrayList<MaterialItem> materialItems_installed = new ArrayList<>();
     ArrayList<MaterialItem> materialItems_competitor = new ArrayList<>();
@@ -148,13 +148,14 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         Realm.init(this);
         realm = Realm.getDefaultInstance();
 
-        mInstalledList= findViewById(R.id.material_installed_list);
+        mInstalledList= findViewById(R.id.material_list);
         mServiceList = findViewById(R.id.service_list);
-        mCompetitorList = findViewById(R.id.material_list);
+        mCompetitorList = findViewById(R.id.competitor_list);
         mCompetitorMaterialList = findViewById(R.id.competitor_material_list);
         mNoBtn = findViewById(R.id.radio_no);
         mYesBtn = findViewById(R.id.radio_yes);
         mImg = findViewById(R.id.pos_img);
+        mImgBtn = findViewById(R.id.before_btn);
         mZoneSpinner = findViewById(R.id.zone_spinner);
         mRegionSpinner = findViewById(R.id.region_spinner);
         mShopSpinner = findViewById(R.id.shop_type_spinner);
@@ -167,6 +168,7 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         mPhoneNumber = findViewById(R.id.edt_phone);
         mPosCode = findViewById(R.id.edt_pos_code);
         mCategoryList = findViewById(R.id.categories_list);
+        mMaterialInstalledTitle = findViewById(R.id.material_installed_title);
 
         //get Data from Server
         getServerData();
@@ -221,7 +223,7 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         }
 
         //Setting Competitor Material Adapter
-        LinearLayoutManager linearCompetitorManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager linearCompetitorManager = new LinearLayoutManager(this);
         mCompetitorList.setLayoutManager(linearCompetitorManager);
         competitorAdapter = new CompetitorAdapter(this, competitorItems);
         mCompetitorList.setAdapter(competitorAdapter);
@@ -324,7 +326,7 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         }
 
         //Setting Service Material Adapter
-        LinearLayoutManager linearServiceManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager linearServiceManager = new LinearLayoutManager(this);
         mServiceList.setLayoutManager(linearServiceManager);
         servicesAdapter = new ServicesAdapter(this, serviceItems);
         mServiceList.setAdapter(servicesAdapter);
@@ -346,14 +348,14 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         }
 
         //Setting Category Material Adapter
-        LinearLayoutManager linearCategoryManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-        mCategoryList.setLayoutManager(linearServiceManager);
+        LinearLayoutManager linearCategoryManager = new LinearLayoutManager(this);
+        mCategoryList.setLayoutManager(linearCategoryManager);
         categoryAdapter = new CategoryAdapter(this, categoryItems);
         mCategoryList.setAdapter(categoryAdapter);
         categoryAdapter.setItemClickListener(this);
 
 
-        mImg.setOnClickListener(new View.OnClickListener() {
+        mImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Take a picture after Installation
@@ -410,6 +412,8 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         competitorItems.clear();
         materialItems_installed.clear();
         regionItems.clear();
+        serviceItems.clear();
+
 
         JSONObject data = new JSONObject(response);
         Log.d(TAG, data.toString());
@@ -521,6 +525,48 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
                 if(materialItems_installed.size() > 0){
                     //persist data to local database
                     Materials_db.persistToDatabase(materialItems_installed);
+                }
+            }
+
+            //Getting Services  Data
+            if(!dataObj.isNull("service_offered")){
+                JSONArray servicesArray = dataObj.getJSONArray("service_offered");
+                int count_services = servicesArray.length();
+                for(int i = 0; i<count_services; i++){
+                    JSONObject serviceObj = servicesArray.getJSONObject(i);
+                    ServiceItem serviceItem = new ServiceItem();
+                    if(!serviceObj.isNull("id"))
+                        serviceItem.setId(serviceObj.getString("id"));
+                    if(!serviceObj.isNull("material_type"))
+                        serviceItem.setName(serviceObj.getString("material_type"));
+                    serviceItems.add(serviceItem);
+                }
+                servicesAdapter.notifyDataSetChanged();
+
+                if(serviceItems.size() > 0){
+                    //persist data to local database
+                    Service_db.persistToDatabase(serviceItems);
+                }
+            }
+
+            //Getting Competitors  Data
+            if(!dataObj.isNull("competitors")){
+                JSONArray competitorsArray = dataObj.getJSONArray("competitors");
+                int count_competitors = competitorsArray.length();
+                for(int i = 0; i<count_competitors; i++){
+                    JSONObject competitorObj = competitorsArray.getJSONObject(i);
+                    CompetitorItem competitorItem = new CompetitorItem();
+                    if(!competitorObj.isNull("id"))
+                        competitorItem.setId(competitorObj.getString("id"));
+                    if(!competitorObj.isNull("material_type"))
+                        competitorItem.setName(competitorObj.getString("material_type"));
+                    competitorItems.add(competitorItem);
+                }
+                competitorAdapter.notifyDataSetChanged();
+
+                if(competitorItems.size() > 0){
+                    //persist data to local database
+                    Competitor_db.persistToDatabase(competitorItems);
                 }
             }
         }
@@ -740,9 +786,13 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         switch(view.getId()) {
             case R.id.radio_yes:
                 if (checked)
+                    mMaterialInstalledTitle.setVisibility(View.VISIBLE);
+                    mInstalledList.setVisibility(View.VISIBLE);
                     break;
             case R.id.radio_no:
                 if (checked)
+                    mMaterialInstalledTitle.setVisibility(View.GONE);
+                    mInstalledList.setVisibility(View.GONE);
                     break;
         }
     }
@@ -829,6 +879,7 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         try {
             if(serviceItems.size() != 0){
                 int indexID = getService(position);
+                Log.d("Services-indexID",String.valueOf(getService(position)));
                 serviceItems.remove(indexID);
                 for (int i = 0; i<serviceItems.size(); i++){
                     Log.d("Services",serviceItems.get(i).getName());

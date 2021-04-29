@@ -37,6 +37,8 @@ public class Category_db extends RealmObject {
         _name = categoryItem.getName();
     }
 
+    public Category_db(){}
+
     /**
      * Persist Category_db to local database
      * @param categoryItems

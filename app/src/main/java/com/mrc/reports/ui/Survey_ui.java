@@ -35,6 +35,7 @@ import com.mrc.reports.adapter.PosListAdapter;
 import com.mrc.reports.adapter.RegionAdapter;
 import com.mrc.reports.adapter.ServicesAdapter;
 import com.mrc.reports.adapter.ShopAdapter;
+import com.mrc.reports.adapter.SurveyPosListAdapter;
 import com.mrc.reports.adapter.ZoneAdapter;
 import com.mrc.reports.database.Competitor_db;
 import com.mrc.reports.database.MaterialTypeList;
@@ -43,6 +44,8 @@ import com.mrc.reports.database.Mrc_db;
 import com.mrc.reports.database.Region_db;
 import com.mrc.reports.database.Service_db;
 import com.mrc.reports.database.ShopType_db;
+import com.mrc.reports.database.SurveyMaterialList;
+import com.mrc.reports.database.Survey_db;
 import com.mrc.reports.database.Zone_db;
 import com.mrc.reports.model.CompetitorItem;
 import com.mrc.reports.model.ErrorMessage;
@@ -51,6 +54,7 @@ import com.mrc.reports.model.MrcItem;
 import com.mrc.reports.model.RegionItem;
 import com.mrc.reports.model.ServiceItem;
 import com.mrc.reports.model.ShopItem;
+import com.mrc.reports.model.SurveyItem;
 import com.mrc.reports.model.ZoneItem;
 import com.mrc.reports.utils.Utils;
 
@@ -79,14 +83,11 @@ public class Survey_ui extends BaseActivity {
     TextView emptyTitle;
     TextView emptyDescription;
     View empty;
-//    ArrayList<MrcItem> mrcItems = new ArrayList<>();
+    ArrayList<SurveyItem> surveyItems = new ArrayList<>();
     RecyclerView recyclerView;
 
-//    PosListAdapter posListAdapter;
-//
-//    RealmList<MaterialTypeList> materialTypeLists = new RealmList<>();
-
-
+    SurveyPosListAdapter surveyPosListAdapter;
+    RealmList<SurveyMaterialList> surveyMaterialLists = new RealmList<>();
     private Map<Integer, ErrorMessage> errorMessage;
 
     Realm realm;
@@ -125,13 +126,13 @@ public class Survey_ui extends BaseActivity {
         setUpSwipeRefresh();
         setUpErrorMessage();
 
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        posListAdapter =  new PosListAdapter(this,mrcItems,realm);
-//        recyclerView.setAdapter(posListAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        surveyPosListAdapter =  new SurveyPosListAdapter(this,surveyItems,realm);
+        recyclerView.setAdapter(surveyPosListAdapter);
 
         showProgress(true);
-//        attemptGetPos();
+        attemptGetPos();
     }
 
     private void setUpSwipeRefresh(){
@@ -144,37 +145,37 @@ public class Survey_ui extends BaseActivity {
             @Override
             public void onRefresh() {
                 //Attempt to get Pos
-//                attemptGetPos();
+                attemptGetPos();
             }
         });
     }
 
-//    public void attemptGetPos(){
-//        mrcItems.clear();
-//        materialTypeLists.clear();
-//        RealmResults<Mrc_db> mrcDb = realm.where(Mrc_db.class).findAll();
-//
-//        if(mrcDb != null && mrcDb.size() > 0){
-//            showProgress(false);
-//            for(Mrc_db mrc_db: mrcDb){
-//                mrcItems.add(new MrcItem(mrc_db));
-//            }
-//
-//            if(mrcItems.size() > 0){
-//                posListAdapter.notifyDataSetChanged();
-//                for(int i=0; i<mrcItems.size(); i++){
-//                    Log.d("SIZE", String.valueOf(mrcItems.get(i).getMaterialTypeLists().size()));
+    public void attemptGetPos(){
+        surveyItems.clear();
+        surveyMaterialLists.clear();
+        RealmResults<Survey_db> surveyDb = realm.where(Survey_db.class).findAll();
+
+        if(surveyDb != null && surveyDb.size() > 0){
+            showProgress(false);
+            for(Survey_db survey_db: surveyDb){
+                surveyItems.add(new SurveyItem(survey_db));
+            }
+
+            if(surveyItems.size() > 0){
+                surveyPosListAdapter.notifyDataSetChanged();
+//                for(int i=0; i<surveyItems.size(); i++){
+//                    Log.d("SIZE", String.valueOf(surveyItems.get(i).getSurveyMaterialLists().size()));
 //                }
-//            }
-//
-//        }
-//
-//        if(mrcItems.size() == 0){
-//            showProgress(false);
-//            showEmptyState(true,0);
-//
-//        }
-//    }
+            }
+
+        }
+
+        if(surveyItems.size() == 0){
+            showProgress(false);
+            showEmptyState(true,0);
+
+        }
+    }
 
 
     //setup all errors available in this fragment

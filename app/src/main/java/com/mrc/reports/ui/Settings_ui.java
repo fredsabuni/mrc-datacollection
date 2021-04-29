@@ -158,6 +158,9 @@ public class Settings_ui extends BaseActivity {
                     detailsObj.put("survey_phone_number", surveyItems.get(i).getPhone_number());
                     detailsObj.put("survey_branding_status", surveyItems.get(i).getBranding());
 
+                    //TODO::    UNCOMMENT THIS
+//                    detailsObj.put("survey_picture", surveyItems.get(i).get_img());
+
                     //Survey Data
                     for(int j = 0; j<surveyItems.get(i).getSurveyServiceLists().size(); j++){
                         JSONObject servicesObj = new JSONObject();
@@ -234,10 +237,6 @@ public class Settings_ui extends BaseActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
-
-
-
 
         }
 
@@ -351,11 +350,9 @@ public class Settings_ui extends BaseActivity {
     }
 
     public void parseSurveyData(String response) throws JSONException {
-
         progressDialog.dismiss();
         JSONObject loginObject = new JSONObject(response);
         Log.d(TAG,"return String " + loginObject.toString());
-
         String mMessage = "";
 
         if(loginObject.getInt("code") == 200){
@@ -383,19 +380,18 @@ public class Settings_ui extends BaseActivity {
                     surveyDb.setSurvey_phone_number(surveyItems.get(i).getPhone_number());
                     surveyDb.setSurvey_pos_code(surveyItems.get(i).getPos_code());
                     surveyDb.setSurvey_shop_type_id(surveyItems.get(i).getShop_type_id());
+                    surveyDb.setSurvey_lon(surveyItems.get(i).getLon());
+                    surveyDb.setSurvey_lat(surveyItems.get(i).getLat());
                     surveyDb.setSurveyMaterialLists(surveyItems.get(i).getSurveyMaterialLists());
                     surveyDb.setSurveyCategoryLists(surveyItems.get(i).getSurveyCategoryLists());
                     surveyDb.setSurveyCompetitorLists(surveyItems.get(i).getSurveyCompetitorLists());
                     surveyDb.setSurveyComMaterialLists(surveyItems.get(i).getSurveyComMaterialLists());
-                    surveyDb.setSurvey_lon(surveyItems.get(i).getLon());
-                    surveyDb.setSurvey_lat(surveyItems.get(i).getLat());
                     surveyDb.setSurvey_branding(surveyItems.get(i).getBranding());
-                    surveyDb.setStatus(STATUS_NEEDS_UPLOADED);
+                    surveyDb.setSurvey_img(surveyItems.get(i).get_img());
+                    surveyDb.setStatus(STATUS_SURVEY);
                     //Insert Data into Database
                     realm.copyToRealmOrUpdate(surveyDb);
                     realm.commitTransaction();
-
-
 
                 }
 

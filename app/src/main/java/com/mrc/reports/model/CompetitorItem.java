@@ -7,6 +7,8 @@ public class CompetitorItem {
     String id;
     String Name;
 
+    public CompetitorItem(){}
+
     public CompetitorItem(String id, String Name){
         this.id = id;
         this.Name = Name;

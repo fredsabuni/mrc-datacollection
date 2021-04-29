@@ -361,13 +361,14 @@
             android:text="@string/service_txt"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginLeft="@dimen/_16sdp"
-            android:textAllCaps="true"/>
+            android:textAllCaps="true" />
 
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/service_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_4sdp" />
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            android:layout_marginTop="@dimen/_4sdp"/>
 
         <TextView android:id="@+id/material_installed_title"
             android:layout_width="wrap_content"
@@ -377,13 +378,17 @@
             android:textStyle="bold"
             android:text="@string/material_installed_txt"
             android:layout_marginLeft="@dimen/_16sdp"
-            android:textAllCaps="true"/>
+            android:paddingTop="@dimen/_4sdp"
+            android:paddingBottom="@dimen/_4sdp"
+            android:textAllCaps="true"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/material_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/_4sdp" />
+            android:layout_marginTop="@dimen/_4sdp"
+            android:visibility="gone"/>
 
         <TextView android:id="@+id/competitor_title"
             android:layout_width="wrap_content"
