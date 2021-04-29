@@ -720,6 +720,7 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         survey_db.setSurvey_lat(String.valueOf(MLATITUDE));
         survey_db.setSurvey_lon(String.valueOf(MLONGITUDE));
         survey_db.setSurvey_branding(brandingData);
+        survey_db.setSurvey_img(ImgData);
         survey_db.setStatus(STATUS_NEEDS_SYNC);
         //Insert Data into Database
         realm.insertOrUpdate(survey_db);
