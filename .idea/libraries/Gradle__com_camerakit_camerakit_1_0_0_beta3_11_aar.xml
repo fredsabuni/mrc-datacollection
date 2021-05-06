@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.camerakit:camerakit:1.0.0-beta3.11@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20985a4c15a4883d0ca12b83891cb7a6/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4219af7423a8163338329758934b8eea/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20985a4c15a4883d0ca12b83891cb7a6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20985a4c15a4883d0ca12b83891cb7a6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20985a4c15a4883d0ca12b83891cb7a6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4219af7423a8163338329758934b8eea/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4219af7423a8163338329758934b8eea/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4219af7423a8163338329758934b8eea/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

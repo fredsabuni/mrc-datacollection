@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MRC-Tool.iml" filepath="$PROJECT_DIR$/.idea/modules/MRC-Tool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MRC-Tool.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MRC-Tool.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mrc-datacollection.iml" filepath="$PROJECT_DIR$/.idea/modules/mrc-datacollection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/mrc-datacollection.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/mrc-datacollection.app.iml" />
     </modules>
   </component>
 </project>

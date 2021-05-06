@@ -537,8 +537,8 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
                     ServiceItem serviceItem = new ServiceItem();
                     if(!serviceObj.isNull("id"))
                         serviceItem.setId(serviceObj.getString("id"));
-                    if(!serviceObj.isNull("material_type"))
-                        serviceItem.setName(serviceObj.getString("material_type"));
+                    if(!serviceObj.isNull("service_name"))
+                        serviceItem.setName(serviceObj.getString("service_name"));
                     serviceItems.add(serviceItem);
                 }
                 servicesAdapter.notifyDataSetChanged();
@@ -558,8 +558,8 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
                     CompetitorItem competitorItem = new CompetitorItem();
                     if(!competitorObj.isNull("id"))
                         competitorItem.setId(competitorObj.getString("id"));
-                    if(!competitorObj.isNull("material_type"))
-                        competitorItem.setName(competitorObj.getString("material_type"));
+                    if(!competitorObj.isNull("competitor_name"))
+                        competitorItem.setName(competitorObj.getString("competitor_name"));
                     competitorItems.add(competitorItem);
                 }
                 competitorAdapter.notifyDataSetChanged();

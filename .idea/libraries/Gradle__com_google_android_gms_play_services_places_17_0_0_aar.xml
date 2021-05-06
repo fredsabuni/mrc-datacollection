@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-places:17.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8a0580f0b13e0623928ef4f30d403a02/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8a0580f0b13e0623928ef4f30d403a02/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8a0580f0b13e0623928ef4f30d403a02/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e1c3cf101273d7c526f6cbf7dc23c96/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e1c3cf101273d7c526f6cbf7dc23c96/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e1c3cf101273d7c526f6cbf7dc23c96/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-places/17.0.0/5735e9e8b36fa88f762e24633371d3cb8e97ec04/play-services-places-17.0.0-javadoc.jar!/" />

@@ -27,7 +27,7 @@
     <string name="shop_type_txt">Shop Type</string>
     <string name="material_type_txt">Type of Materials Removed</string>
     <string name="material_installed_txt">Type of Materials Installed</string>
-    <string name="categories_txt">Category of Branding</string>
+    <string name="categories_txt">POS Type</string>
     <string name="competitor_material_txt">Competitors Materials Installed</string>
     <string name="branding_txt">Is the POS Branded?</string>
     <string name="service_txt">Service Offered</string>
@@ -84,7 +84,7 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="title_activity_add_survey_ui">AddSurvey_ui</string>
+    <string name="title_activity_add_survey_ui">Mrc POS Survey</string>
 
 
 </resources>
