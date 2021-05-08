@@ -85,6 +85,7 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_add_survey_ui">Mrc POS Survey</string>
+    <string name="title_activity_update_survey_ui">UpdateSurvey_ui</string>
 
 
 </resources>

@@ -65,6 +65,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ViewHo
                     ID = UUID.randomUUID().toString();
                     serviceItems.clear();
                     serviceItems.add(new ServiceItem(ID,mList.get(position).getName()));
+                    serviceClickListener.onServiceItemClick(compoundButton,serviceItems);
                 }else {
                     ServiceItem serviceItem = new ServiceItem(ID, mList.get(position).getName());
                     serviceClickListener.onServiceRemoveItemClick(compoundButton,serviceItem);

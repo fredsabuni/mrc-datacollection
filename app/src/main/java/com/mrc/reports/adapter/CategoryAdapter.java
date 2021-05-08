@@ -66,6 +66,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                     ID = UUID.randomUUID().toString();
                     categoryItems.clear();
                     categoryItems.add(new CategoryItem(ID,mList.get(position).getName()));
+                    categoryClickListener.onCategoryItemClick(compoundButton,categoryItems);
                 }else {
                     CategoryItem categoryItem = new CategoryItem(ID, mList.get(position).getName());
                     categoryClickListener.onCategoryRemoveItemClick(compoundButton,categoryItem);

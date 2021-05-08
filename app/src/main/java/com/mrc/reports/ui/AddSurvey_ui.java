@@ -10,7 +10,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -107,6 +106,12 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     ArrayList<ServiceItem> serviceItems = new ArrayList<>();
     ArrayList<CompetitorItem> competitorItems = new ArrayList<>();
     ArrayList<CategoryItem> categoryItems = new ArrayList<>();
+
+    ArrayList<ServiceItem> surveyServiceItems = new ArrayList<>();
+    ArrayList<CompetitorItem> surveyCompetitorItems = new ArrayList<>();
+    ArrayList<CategoryItem> surveyCategoryItems = new ArrayList<>();
+    ArrayList<MaterialItem> surveyMaterialItems = new ArrayList<>();
+    ArrayList<MaterialItem> surveyCompetitorMaterialItems  = new ArrayList<>();
 
     ZoneAdapter zoneAdapter;
     RegionAdapter regionAdapter;
@@ -650,47 +655,47 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
             return;
         }
 
-        if(serviceItems.size() > 0){
-            for (int i = 0; i< serviceItems.size(); i++){
+        if(surveyServiceItems.size() > 0){
+            for (int i = 0; i< surveyServiceItems.size(); i++){
                 SurveyServiceList surveyServiceList = new SurveyServiceList();
-                surveyServiceList.setId(serviceItems.get(i).getId());
-                surveyServiceList.setName(serviceItems.get(i).getName());
+                surveyServiceList.setId(surveyServiceItems.get(i).getId());
+                surveyServiceList.setName(surveyServiceItems.get(i).getName());
                 surveyServiceLists.add(surveyServiceList);
             }
         }
 
-        if(categoryItems.size() > 0){
-            for (int i = 0; i< categoryItems.size(); i++){
+        if(surveyCategoryItems.size() > 0){
+            for (int i = 0; i< surveyCategoryItems.size(); i++){
                 SurveyCategoryList surveyCategoryList = new SurveyCategoryList();
-                surveyCategoryList.setId(categoryItems.get(i).getId());
-                surveyCategoryList.setName(categoryItems.get(i).getName());
+                surveyCategoryList.setId(surveyCategoryItems.get(i).getId());
+                surveyCategoryList.setName(surveyCategoryItems.get(i).getName());
                 surveyCategoryLists.add(surveyCategoryList);
             }
         }
 
-        if(materialItems_installed.size() > 0){
-            for (int i = 0; i< materialItems_installed.size(); i++){
+        if(surveyMaterialItems.size() > 0){
+            for (int i = 0; i< surveyMaterialItems.size(); i++){
                 SurveyMaterialList surveyMaterialList = new SurveyMaterialList();
-                surveyMaterialList.setId(materialItems_installed.get(i).getId());
-                surveyMaterialList.setType(materialItems_installed.get(i).getName());
+                surveyMaterialList.setId(surveyMaterialItems.get(i).getId());
+                surveyMaterialList.setType(surveyMaterialItems.get(i).getName());
                 surveyMaterialLists.add(surveyMaterialList);
             }
         }
 
-        if(competitorItems.size() > 0){
-            for (int i = 0; i< competitorItems.size(); i++){
+        if(surveyCompetitorItems.size() > 0){
+            for (int i = 0; i< surveyCompetitorItems.size(); i++){
                 SurveyCompetitorList surveyCompetitorList = new SurveyCompetitorList();
-                surveyCompetitorList.setId(competitorItems.get(i).getId());
-                surveyCompetitorList.setName(competitorItems.get(i).getName());
+                surveyCompetitorList.setId(surveyCompetitorItems.get(i).getId());
+                surveyCompetitorList.setName(surveyCompetitorItems.get(i).getName());
                 surveyCompetitorLists.add(surveyCompetitorList);
             }
         }
 
-        if(materialItems_competitor.size() > 0){
-            for (int i = 0; i< materialItems_competitor.size(); i++){
+        if(surveyCompetitorMaterialItems.size() > 0){
+            for (int i = 0; i< surveyCompetitorMaterialItems.size(); i++){
                 SurveyComMaterialList surveyComMaterialList = new SurveyComMaterialList();
-                surveyComMaterialList.setId(competitorItems.get(i).getId());
-                surveyComMaterialList.setType(competitorItems.get(i).getName());
+                surveyComMaterialList.setId(surveyCompetitorMaterialItems.get(i).getId());
+                surveyComMaterialList.setType(surveyCompetitorMaterialItems.get(i).getName());
                 surveyComMaterialLists.add(surveyComMaterialList);
             }
         }
@@ -789,29 +794,31 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
                 if (checked)
                     mMaterialInstalledTitle.setVisibility(View.VISIBLE);
                     mInstalledList.setVisibility(View.VISIBLE);
+                    brandingData = "yes";
                     break;
             case R.id.radio_no:
                 if (checked)
                     mMaterialInstalledTitle.setVisibility(View.GONE);
                     mInstalledList.setVisibility(View.GONE);
+                brandingData = "no";
                     break;
         }
     }
 
     @Override
     public void onCompetitorItemClick(View view, ArrayList<CompetitorItem> competitorItems) {
-        competitorItems.addAll(competitorItems);
-        Log.d("Added", competitorItems.get(0).getName());
+        surveyCompetitorItems.addAll(competitorItems);
+        Log.d("Added", surveyCompetitorItems.get(0).getName());
     }
 
     @Override
     public void onCompetitorRemoveItemClick(View view, CompetitorItem position) {
         try {
-            if(competitorItems.size() != 0){
-                int indexID = getCompetitor(position);
-                competitorItems.remove(indexID);
-                for (int i = 0; i<competitorItems.size(); i++){
-                    Log.d("Competitors",competitorItems.get(i).getName());
+            if(surveyCompetitorItems.size() != 0){
+                int indexID = getCompetitor(position) + 1;
+                surveyCompetitorItems.remove(indexID);
+                for (int i = 0; i<surveyCompetitorItems.size(); i++){
+                    Log.d("Competitors",surveyCompetitorItems.get(i).getName());
                 }
             }
         }catch (Exception e){
@@ -820,23 +827,23 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     }
 
     private int getCompetitor(CompetitorItem position) {
-        return competitorItems.indexOf(position);
+        return surveyCompetitorItems.indexOf(position);
     }
 
     @Override
     public void onComMaterialClick(View view, ArrayList<MaterialItem> materialItems) {
-        materialItems_competitor.addAll(materialItems);
-        Log.d("Added", materialItems_competitor.get(0).getName());
+        surveyCompetitorMaterialItems.addAll(materialItems);
+        Log.d("Added", surveyCompetitorMaterialItems.get(0).getName());
     }
 
     @Override
     public void onComMaterialRemoveClick(View view, MaterialItem position) {
         try {
-            if(materialItems_competitor.size() != 0){
-                int indexID = getCompetitorMaterials(position);
-                materialItems_competitor.remove(indexID);
-                for (int i = 0; i<materialItems_competitor.size(); i++){
-                    Log.d("Competitors Materials",materialItems_competitor.get(i).getName());
+            if(surveyCompetitorMaterialItems.size() != 0){
+                int indexID = getCompetitorMaterials(position) + 1;
+                surveyCompetitorMaterialItems.remove(indexID);
+                for (int i = 0; i<surveyCompetitorMaterialItems.size(); i++){
+                    Log.d("Competitors Materials",surveyCompetitorMaterialItems.get(i).getName());
                 }
             }
         }catch (Exception e){
@@ -845,23 +852,23 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     }
 
     private int getCompetitorMaterials(MaterialItem position) {
-        return materialItems_competitor.indexOf(position);
+        return surveyCompetitorMaterialItems.indexOf(position);
     }
 
     @Override
     public void onMaterialClick(View view, ArrayList<MaterialItem> materialItems) {
-        materialItems_installed.addAll(materialItems);
+        surveyMaterialItems.addAll(materialItems);
         Log.d("Added", materialItems.get(0).getName());
     }
 
     @Override
     public void onMaterialRemoveClick(View view, MaterialItem position) {
         try {
-            if(materialItems_installed.size() != 0){
-                int indexID = getCompetitorMaterials(position);
-                materialItems_installed.remove(indexID);
-                for (int i = 0; i<materialItems_installed.size(); i++){
-                    Log.d("Materials Installed",materialItems_installed.get(i).getName());
+            if(surveyMaterialItems.size() != 0){
+                int indexID = getMaterials(position) + 1;
+                surveyMaterialItems.remove(indexID);
+                for (int i = 0; i<surveyMaterialItems.size(); i++){
+                    Log.d("Materials Installed",surveyMaterialItems.get(i).getName());
                 }
             }
         }catch (Exception e){
@@ -869,21 +876,25 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
         }
     }
 
+    public int getMaterials(MaterialItem position){
+        return surveyMaterialItems.indexOf(position);
+    }
+
     @Override
     public void onServiceItemClick(View view, ArrayList<ServiceItem> Items) {
-        serviceItems.addAll(Items);
-        Log.d("Added", serviceItems.get(0).getName());
+        surveyServiceItems.addAll(Items);
+        Log.d("Added", surveyServiceItems.get(0).getName());
     }
 
     @Override
     public void onServiceRemoveItemClick(View view, ServiceItem position) {
         try {
-            if(serviceItems.size() != 0){
-                int indexID = getService(position);
+            if(surveyServiceItems.size() != 0){
+                int indexID = getService(position) + 1;
                 Log.d("Services-indexID",String.valueOf(getService(position)));
-                serviceItems.remove(indexID);
-                for (int i = 0; i<serviceItems.size(); i++){
-                    Log.d("Services",serviceItems.get(i).getName());
+                surveyServiceItems.remove(indexID);
+                for (int i = 0; i<surveyServiceItems.size(); i++){
+                    Log.d("Services",surveyServiceItems.get(i).getName());
                 }
             }
         }catch (Exception e){
@@ -892,23 +903,23 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     }
 
     private int getService(ServiceItem position) {
-        return serviceItems.indexOf(position);
+        return surveyServiceItems.indexOf(position);
     }
 
     @Override
     public void onCategoryItemClick(View view, ArrayList<CategoryItem> Items) {
-        categoryItems.addAll(Items);
-        Log.d("Added", categoryItems.get(0).getName());
+        surveyCategoryItems.addAll(Items);
+        Log.d("Added", surveyCategoryItems.get(0).getName());
     }
 
     @Override
     public void onCategoryRemoveItemClick(View view, CategoryItem position) {
         try {
-            if(categoryItems.size() != 0){
-                int indexID = getCategory(position);
-                categoryItems.remove(indexID);
-                for (int i = 0; i<categoryItems.size(); i++){
-                    Log.d("Category",categoryItems.get(i).getName());
+            if(surveyCategoryItems.size() != 0){
+                int indexID = getCategory(position) + 1;
+                surveyCategoryItems.remove(indexID);
+                for (int i = 0; i<surveyCategoryItems.size(); i++){
+                    Log.d("Category",surveyCategoryItems.get(i).getName());
                 }
             }
         }catch (Exception e){
@@ -917,6 +928,6 @@ public class AddSurvey_ui extends BaseActivity implements CategoryAdapter.Catego
     }
 
     public int getCategory(CategoryItem position){
-        return  categoryItems.indexOf(position);
+        return  surveyCategoryItems.indexOf(position);
     }
 }

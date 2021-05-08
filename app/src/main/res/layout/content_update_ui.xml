@@ -28,7 +28,6 @@
                 android:textColor="@color/grey_700"
                 android:text="@string/zone_txt"/>
 
-
             <Spinner android:id="@+id/zone_spinner"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_32sdp"

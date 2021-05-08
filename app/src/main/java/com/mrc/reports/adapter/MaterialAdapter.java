@@ -69,6 +69,7 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
                     indexID = mList.get(position).getName() + MATERIAL_INSTALLED;
                     materialList_list.clear();
                     materialList_list.add(new MaterialItem(ID,mList.get(position).getName(),QUANTITY ,MATERIAL_INSTALLED, indexID));
+                    materialClickListener.onMaterialClick(compoundButton,materialList_list);
                 }else {
                     MaterialItem materialItem = new MaterialItem(mList.get(position).getName(),MATERIAL_INSTALLED);
                     materialClickListener.onMaterialRemoveClick(compoundButton,materialItem);

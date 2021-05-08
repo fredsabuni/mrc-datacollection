@@ -157,9 +157,7 @@ public class Settings_ui extends BaseActivity {
                     detailsObj.put("survey_contact_person", surveyItems.get(i).getContact_person());
                     detailsObj.put("survey_phone_number", surveyItems.get(i).getPhone_number());
                     detailsObj.put("survey_branding_status", surveyItems.get(i).getBranding());
-
-                    //TODO::    UNCOMMENT THIS
-//                    detailsObj.put("survey_picture", surveyItems.get(i).get_img());
+                    detailsObj.put("survey_picture", surveyItems.get(i).get_img());
 
                     //Survey Data
                     for(int j = 0; j<surveyItems.get(i).getSurveyServiceLists().size(); j++){
@@ -167,8 +165,8 @@ public class Settings_ui extends BaseActivity {
                         servicesObj.put("survey_service_offered", surveyItems.get(i).getSurveyServiceLists().get(j).getName());
                         serviceArray.put(servicesObj);
                     }
-                    serviceFinalArray.put(serviceArray);
-                    detailsObj.put("services", serviceFinalArray);
+//                    serviceFinalArray.put(serviceArray);
+                    detailsObj.put("services", serviceArray);
 
                     //Category Data
                     for(int j = 0; j<surveyItems.get(i).getSurveyCategoryLists().size(); j++){
@@ -176,8 +174,8 @@ public class Settings_ui extends BaseActivity {
                         categoryObj.put("survey_pos_category", surveyItems.get(i).getSurveyCategoryLists().get(j).getName());
                         categoryArray.put(categoryObj);
                     }
-                    categoryFinalArray.put(serviceArray);
-                    detailsObj.put("category", categoryFinalArray);
+//                    categoryFinalArray.put(categoryArray);
+                    detailsObj.put("category", categoryArray);
 
                     //Competitor Data
                     for(int j = 0; j<surveyItems.get(i).getSurveyCompetitorLists().size(); j++){
@@ -194,8 +192,8 @@ public class Settings_ui extends BaseActivity {
                         competitorMaterialsObj.put("survey_competitor_material", surveyItems.get(i).getSurveyComMaterialLists().get(j).getType());
                         competitorMaterialArray.put(competitorMaterialsObj);
                     }
-                    competitorMaterialFinalArray.put(competitorMaterialArray);
-                    detailsObj.put("competitorMaterialArray", competitorMaterialFinalArray);
+//                    competitorMaterialFinalArray.put(competitorMaterialArray);
+                    detailsObj.put("competitorMaterialArray", competitorMaterialArray);
 
                     //Materials Data
                     for(int j = 0; j<surveyItems.get(i).getSurveyMaterialLists().size(); j++){
@@ -203,9 +201,11 @@ public class Settings_ui extends BaseActivity {
                         materialsObj.put("survey_material_branded", surveyItems.get(i).getSurveyMaterialLists().get(j).getType());
                         materialArray.put(materialsObj);
                     }
-                    materialFinalArray.put(materialArray);
-                    detailsObj.put("materials_installed", materialFinalArray);
+//                    materialFinalArray.put(materialArray);
+                    detailsObj.put("materials_installed", materialArray);
                     finalDetailsArray.put(detailsObj);
+
+                    Log.d("Data", finalDetailsArray.toString());
 
                     retrofit2.Call<ResponseBody> syncPos = api.posSurvey(AccountUtils.getToken(this),AccountUtils.getPhone(this),finalDetailsArray.toString());
                     syncPos.enqueue(new Callback<ResponseBody>() {
@@ -254,13 +254,11 @@ public class Settings_ui extends BaseActivity {
         }
 
         if(mrcItems != null){
-
             if(!Utils.isInternetAvailable(this)) return;
 
             progressDialog.show();
 
             int count = mrcItems.size();
-
 
             JSONObject detailsObj = new JSONObject();
             JSONObject picturesObj = new JSONObject();
@@ -311,7 +309,6 @@ public class Settings_ui extends BaseActivity {
                     imagesFinalArray.put(imagesArray);
 
                     detailsObj.put("pictures", imagesFinalArray);
-
                     finalDetailsArray.put(detailsObj);
 
                 }
@@ -444,10 +441,6 @@ public class Settings_ui extends BaseActivity {
                     realm.commitTransaction();
                 }
             }
-
-
-
-
         }
     }
 

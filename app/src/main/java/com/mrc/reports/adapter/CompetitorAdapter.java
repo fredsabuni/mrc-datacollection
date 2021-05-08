@@ -63,6 +63,7 @@ public class CompetitorAdapter extends RecyclerView.Adapter<CompetitorAdapter.Vi
                     ID = UUID.randomUUID().toString();
                     competitorItems.clear();
                     competitorItems.add(new CompetitorItem(ID,mList.get(position).getName()));
+                    competitorClickListener.onCompetitorItemClick(compoundButton,competitorItems);
                 }else {
                     CompetitorItem competitorItem = new CompetitorItem(ID, mList.get(position).getName());
                     competitorClickListener.onCompetitorRemoveItemClick(compoundButton,competitorItem);

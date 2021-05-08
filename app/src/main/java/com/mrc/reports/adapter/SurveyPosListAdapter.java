@@ -75,14 +75,14 @@ public class SurveyPosListAdapter extends RecyclerView.Adapter<SurveyPosListAdap
         final List<SurveyMaterialList> materialType = new ArrayList<>();
         materialType.addAll(mRealm.copyFromRealm(mList.get(position).getSurveyMaterialLists()));
 
-
+        //TODO: EDIT THIS PLEASE
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, Update_ui.class);
-                intent.putExtra(CURRENT_MRC, mList.get(position));
-                intent.putParcelableArrayListExtra(CURRENT_MATERIAL, (ArrayList<? extends Parcelable>) materialType);
-                mContext.startActivity(intent);
+//                Intent intent = new Intent(mContext, Update_ui.class);
+//                intent.putExtra(CURRENT_MRC, mList.get(position));
+//                intent.putParcelableArrayListExtra(CURRENT_MATERIAL, (ArrayList<? extends Parcelable>) materialType);
+//                mContext.startActivity(intent);
             }
         });
     }
